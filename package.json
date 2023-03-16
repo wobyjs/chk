@@ -1,0 +1,22 @@
+{
+    "name": "chk",
+    "version": "1.0.0",
+    "description": "In browser testing framework",
+    "main": "./dist/index.js",
+    "scripts": {
+        "preinstall": "npx only-allow pnpm",
+        "build": "vite build && tsc",
+        "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^18.13.0",
+        "@types/react": "^18.0.27",
+        "vite": "^4.1.4"
+    },
+    "dependencies": {
+        "react": "^18.2.0"
+    }
+}

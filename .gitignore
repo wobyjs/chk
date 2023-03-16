@@ -1,0 +1,5 @@
+.yarn
+.firebase
+build*
+dist*
+node_modules

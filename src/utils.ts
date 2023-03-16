@@ -1,0 +1,1 @@
+export const format = (v: any) => typeof v === 'string' ? `"${v}"` : v
