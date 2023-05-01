@@ -4,6 +4,7 @@
     "description": "In browser testing framework",
     "main": "./dist/index.js",
     "scripts": {
+        "release": "git add . && git commit -m \"Bump version\" git push && pnpm version patch",
         "preinstall": "npx only-allow pnpm",
         "build": "vite build && tsc",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
@@ -12,9 +13,10 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/node": "^18.13.0",
-        "@types/react": "^18.0.27",
-        "vite": "^4.1.4"
+        "@types/node": "^18.16.3",
+        "@types/react": "^18.2.0",
+        "vite": "^4.3.3",
+        "vite-plugin-clean": "^1.0.0"
     },
     "dependencies": {
         "react": "^18.2.0"
