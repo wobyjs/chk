@@ -1,0 +1,31 @@
+{
+    "name": "chk-example",
+    "version": "1.0.0",
+    "description": "In browser testing framework",
+    "main": "./dist/index.js",
+    "scripts": {
+        "git": "git add . && git commit -m \"Bump version\" && git push",
+        "bump": "pnpm version patch",
+        "npmjs": "pnpm publish",
+        "release": "run-s -c git bump npmjs",
+        "preinstall": "npx only-allow pnpm",
+        "build": "vite build",
+        "preview": "vite preview",
+        "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
+        "test": "vite  --force --mode dev --host"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.1.11",
+        "tailwindcss": "^4.1.11",
+        "typescript": "^5.8.3",
+        "vite": "^6.3.5",
+        "vite-plugin-clean": "^1.0.0",
+        "vite-plugin-snapshot": "workspace:../../vite-plugin-snapshot"
+    },
+    "dependencies": {
+        "chk": "workspace:../",
+        "woby": "workspace:../../woby"
+    }
+}

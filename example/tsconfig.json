@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "allowJs": false,
+        "skipLibCheck": true,
+        "strictNullChecks": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationMap": true,
+        "declarationDir": "./dist/types",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true, // <--- IMPORTANT for reading JSON snapshots
+        "isolatedModules": true,
+        "jsx": "react-jsx", // <--- IMPORTANT for JSX
+        "jsxImportSource": "woby", // <--- IMPORTANT for Woby
+        "useDefineForClassFields": true,
+        "preserveSymlinks": true
+    },
+    "include": [
+        "./**/*",
+        "*.test.*",
+    ],
+    "exclude": [
+        "**/vite.config.mts"
+    ]
+}

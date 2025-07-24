@@ -1,0 +1,8 @@
+{
+  "props": {
+    "message": "World",
+    "count": 1,
+    "timestamp": "2025-07-24T03:11:29.915Z"
+  },
+  "html": "<div><h1>Hello, World!</h1><p>Count: 1</p><p>Timestamp: 2025-07-24T03:11:29.915Z</p><button>Click Me</button></div>"
+}
