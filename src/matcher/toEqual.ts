@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toEqual` matcher for the `chk` testing framework.
+ * @file Implements the `toEqual` matcher for the `verifies` testing framework.
  * This matcher asserts that two values are deeply equal.
  */
 

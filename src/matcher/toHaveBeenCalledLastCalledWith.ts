@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveBeenCalledLastCalledWith` matcher for the `chk` testing framework.
+ * @file Implements the `toHaveBeenCalledLastCalledWith` matcher for the `verifies` testing framework.
  * This matcher asserts that a mock function was last called with specific arguments.
  */
 

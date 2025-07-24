@@ -3,7 +3,7 @@
  * It integrates with the `Chk` component to automatically create and manage browser-based snapshot tests for each exported component or test.
  */
 
-import { Chk } from './chk'
+import { Verify } from './verify'
 import { JSX, Stack } from 'woby'
 
 type Component = (props: any) => JSX.Element
@@ -26,9 +26,9 @@ export function Csf({ module, path }: { module: Module, path?: string }): JSX.Ch
         if (Object.prototype.hasOwnProperty.call(module, componentName)) {
             const Component = module[componentName]
             if (typeof Component === 'function') {
-                ret.push(() => <Chk name={(path ? path + '/' : '') + Component.name}>
+                ret.push(() => <Verify name={(path ? path + '/' : '') + Component.name}>
                     <Component />
-                </Chk>)
+                </Verify>)
             }
         }
     }

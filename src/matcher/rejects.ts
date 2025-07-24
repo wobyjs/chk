@@ -1,5 +1,5 @@
 /**
- * @file Implements the `rejects` matcher for the `chk` testing framework.
+ * @file Implements the `rejects` matcher for the `verifies` testing framework.
  * This matcher is used to assert that a Promise subject rejects, and optionally, to assert the value it rejects with.
  */
 

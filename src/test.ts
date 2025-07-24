@@ -1,10 +1,10 @@
 /**
- * @file Implements the `Test` class, which represents an individual test suite or a single test case within the `chk` testing framework.
+ * @file Implements the `Test` class, which represents an individual test suite or a single test case within the `verifies` testing framework.
  * It provides the structure for defining tests, running expectations, and reporting results.
  */
 
 import { $, Stack } from "woby"
-import { Check } from "./check"
+import { Verifies } from "./verifies"
 import { Expect } from "./expect"
 import { binary } from "./messenger/console/binary"
 import { check } from './messenger/console/check'
@@ -16,8 +16,8 @@ import { imp, req } from "./mock"
 import { loc } from "./messenger/console/loc"
 
 
-if (!window.chk)
-    window.chk = new Check()
+if (!window.verifies)
+    window.verifies = new Verifies()
 
 /**
  * The main class for creating and managing a test.
@@ -48,7 +48,7 @@ export class Test<T> {
     /**
      * A reference to the parent `Test` suite or the global `Check` instance.
      */
-    parent!: Test<any> | Check
+    parent!: Test<any> | Verifies
     /**
      * A stack trace associated with the creation of this test, useful for debugging and reporting file locations.
      */
@@ -234,7 +234,7 @@ export class Test<T> {
 }
 
 /**
- * A factory function for creating a `Test` instance and adding it to the global `window.chk` object.
+ * A factory function for creating a `Test` instance and adding it to the global `window.verifies` object.
  * This is the primary way to define new test suites or test cases.
  * @template T The type of the subject or context for the test.
  * @param titleOrSubject The title of the test or the subject under test.
@@ -244,7 +244,7 @@ export class Test<T> {
  */
 export const test: TestFactory = <T>(titleOrSubject: T | string, opt?: TestOptions<T> | TesterType<T>, func?: TesterType<T | string>) => {
     const test = !!func ? new Test(titleOrSubject, opt as any, func) : (!!opt ? new Test(titleOrSubject as any, opt as any) : new Test(titleOrSubject as any))
-    test.parent = window.chk
-    window.chk.modules.push(test)
+    test.parent = window.verifies
+    window.verifies.modules.push(test)
     return test
 }

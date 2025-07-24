@@ -1,5 +1,5 @@
 /**
- * @file Implements the `greaterThan` (`>`) matcher for the `chk` testing framework.
+ * @file Implements the `greaterThan` (`>`) matcher for the `verifies` testing framework.
  * This matcher asserts that the subject is greater than the target value.
  */
 

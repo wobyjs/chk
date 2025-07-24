@@ -2,7 +2,7 @@ import { DEBUGGER } from 'woby'
 import * as sample from './sample.test'
 // import * as example from './example.test'
 import * as comps from './components.test'
-import { Chk, Csf } from 'chk'
+import { Verify, Csf } from 'verifies'
 
 interface MyComponentProps {
     message: string
@@ -32,13 +32,13 @@ export function App() {
     return (
         <div>
             Explicit test
-            <Chk name="MyComponent 1" message="World" count={1} timestamp={now}>
+            <Verify name="MyComponent 1" message="World" count={1} timestamp={now}>
                 <MyComponent message="World" count={1} timestamp={now} />
-            </Chk>
+            </Verify>
 
-            <Chk name="MyComponent 2" message="Woby" count={2} timestamp={new Date(2025, 0, 2, 0, 0, 0, 0)}>
+            <Verify name="MyComponent 2" message="Woby" count={2} timestamp={new Date(2025, 0, 2, 0, 0, 0, 0)}>
                 <MyComponent message="Woby" count={2} timestamp={new Date(new Date(2025, 0, 2, 0, 0, 0, 0))} />
-            </Chk>
+            </Verify>
             Components Story Format
             <Csf module={comps} path='components.test' />
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeTypeOf` matcher for the `chk` testing framework.
+ * @file Implements the `toBeTypeOf` matcher for the `verifies` testing framework.
  * This matcher asserts that a value is of a specific JavaScript primitive type.
  */
 

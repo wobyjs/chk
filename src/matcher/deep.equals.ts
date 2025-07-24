@@ -1,5 +1,5 @@
 /**
- * @file Implements strict equality matchers (`===`, `deq`, `toBe`) for the `chk` testing framework.
+ * @file Implements strict equality matchers (`===`, `deq`, `toBe`) for the `verifies` testing framework.
  * These matchers assert that the subject is strictly equal to the target.
  */
 

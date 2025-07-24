@@ -1,5 +1,5 @@
 /**
- * @file Implements the `equals` function for deep equality comparison and the `eq` (`==`) matcher for the `chk` testing framework.
+ * @file Implements the `equals` function for deep equality comparison and the `eq` (`==`) matcher for the `verifies` testing framework.
  * This provides a way to assert that two values are deeply equal, handling various data types including objects and arrays.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveBeenCalledTimes` matcher for the `chk` testing framework.
+ * @file Implements the `toHaveBeenCalledTimes` matcher for the `verifies` testing framework.
  * This matcher asserts that a mock function has been called a specific number of times.
  */
 

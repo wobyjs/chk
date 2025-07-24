@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      chk:
+      verifies:
         specifier: workspace:../
         version: link:..
       woby:

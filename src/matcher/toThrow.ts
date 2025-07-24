@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toThrow` matcher for the `chk` testing framework.
+ * @file Implements the `toThrow` matcher for the `verifies` testing framework.
  * This matcher asserts that a function throws an error, optionally matching the error message or a regular expression.
  */
 

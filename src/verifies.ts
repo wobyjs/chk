@@ -1,5 +1,5 @@
 /**
- * @file Implements the `Check` class, which serves as the core test runner and reporter for the `chk` testing framework.
+ * @file Implements the `Check` class, which serves as the core test runner and reporter for the `verifies` testing framework.
  * It orchestrates the execution of test modules and generates reports based on their outcomes.
  */
 
@@ -9,7 +9,7 @@ import { type Test } from "./test"
  * The `Check` class manages and executes a collection of test modules.
  * It provides methods for running tests, generating reports, and accessing test results.
  */
-export class Check {
+export class Verifies {
     /**
      * An array to store registered test modules.
      * Each module is an instance of `Test`.
@@ -65,7 +65,7 @@ export class Check {
 }
 
 /**
- * Extends the global `Window` interface to include a `chk` property.
+ * Extends the global `Window` interface to include a `verifies` property.
  * This allows the `Check` instance to be globally accessible in a browser environment.
  */
 declare global {
@@ -73,10 +73,10 @@ declare global {
         /**
          * The global instance of the `Check` test runner.
          */
-        chk: Check
+        verifies: Verifies
     }
 }
 
-// Initialize the global `chk` instance if it doesn't already exist.
-if (!window.chk)
-    window.chk = new Check()
+// Initialize the global `verifies` instance if it doesn't already exist.
+if (!window.verifies)
+    window.verifies = new Verifies()

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `setTitle` (`$`) matcher for the `chk` testing framework.
+ * @file Implements the `setTitle` (`$`) matcher for the `verifies` testing framework.
  * This matcher allows setting a custom title or description for an expectation, which can be useful for reporting.
  */
 

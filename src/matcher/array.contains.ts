@@ -1,5 +1,5 @@
 /**
- * @file Implements the `array.contains` matcher for the `chk` testing framework.
+ * @file Implements the `array.contains` matcher for the `verifies` testing framework.
  * This matcher asserts that an array contains all elements from another array.
  */
 

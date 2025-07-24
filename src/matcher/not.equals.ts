@@ -1,5 +1,5 @@
 /**
- * @file Implements the `not.equals` (`!=`, `neq`) matchers for the `chk` testing framework.
+ * @file Implements the `not.equals` (`!=`, `neq`) matchers for the `verifies` testing framework.
  * These matchers assert that the subject is not loosely equal to the target value.
  */
 

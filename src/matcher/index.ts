@@ -2,7 +2,7 @@
  * @file This file serves as the main entry point for the `matcher` directory,
  * re-exporting all individual matcher implementations.
  * These matchers extend the `Expect` prototype, providing a rich set of assertion capabilities
- * for the `chk` testing framework.
+ * for the `verifies` testing framework.
  */
 
 export * from './not'

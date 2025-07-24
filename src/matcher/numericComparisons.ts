@@ -1,5 +1,5 @@
 /**
- * @file Implements various numeric comparison matchers for the `chk` testing framework.
+ * @file Implements various numeric comparison matchers for the `verifies` testing framework.
  * These matchers allow asserting relationships between numeric values, such as greater than, less than, and their inclusive counterparts.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toMatch` matcher for the `chk` testing framework.
+ * @file Implements the `toMatch` matcher for the `verifies` testing framework.
  * This matcher asserts that a string matches a given regular expression.
  */
 

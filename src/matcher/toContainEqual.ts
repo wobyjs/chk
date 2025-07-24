@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toContainEqual` matcher for the `chk` testing framework.
+ * @file Implements the `toContainEqual` matcher for the `verifies` testing framework.
  * This matcher asserts that an array contains an element that is deeply equal to a given item.
  */
 

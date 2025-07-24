@@ -1,5 +1,5 @@
 /**
- * @file Implements the `not` modifier for the `chk` testing framework.
+ * @file Implements the `not` modifier for the `verifies` testing framework.
  * This allows for inverting the result of any subsequent matcher, enabling assertions for negative conditions.
  */
 

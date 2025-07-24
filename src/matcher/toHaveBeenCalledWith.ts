@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveBeenCalledWith` matcher for the `chk` testing framework.
+ * @file Implements the `toHaveBeenCalledWith` matcher for the `verifies` testing framework.
  * This matcher asserts that a mock function has been called with specific arguments at least once.
  */
 

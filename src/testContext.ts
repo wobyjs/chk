@@ -1,5 +1,5 @@
 /**
- * @file Manages the test context within the `chk` testing framework.
+ * @file Manages the test context within the `verifies` testing framework.
  * This file defines the symbol used to access the test context and provides `expect` and `test` functions
  * that are context-aware, allowing them to interact with the current test suite.
  */

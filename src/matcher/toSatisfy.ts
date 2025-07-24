@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toSatisfy` matcher for the `chk` testing framework.
+ * @file Implements the `toSatisfy` matcher for the `verifies` testing framework.
  * This matcher asserts that a value satisfies a given predicate function.
  */
 

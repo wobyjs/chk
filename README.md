@@ -1,8 +1,8 @@
-# chk: A Modern TypeScript Testing Toolkit
+# verifies: A Modern TypeScript Testing Toolkit
 
-`chk` is a powerful and flexible testing toolkit designed to streamline unit and integration testing in TypeScript projects. It offers a comprehensive suite of utilities for writing robust and reliable tests with an intuitive, fluent API that will feel familiar to users of modern testing frameworks like Jest or Vitest.
+`verifies` is a powerful and flexible testing toolkit designed to streamline unit and integration testing in TypeScript projects. It offers a comprehensive suite of utilities for writing robust and reliable tests with an intuitive, fluent API that will feel familiar to users of modern testing frameworks like Jest or Vitest.
 
-Whether you're building a simple library or a complex application, `chk` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `chk` has you covered.
+Whether you're building a simple library or a complex application, `verifies` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `verifies` has you covered.
 
 ## Features
 
@@ -12,46 +12,64 @@ Whether you're building a simple library or a complex application, `chk` provide
 *   **Async Support:** First-class support for testing asynchronous code with `async/await`.
 *   **Familiar Syntax:** A testing API that is easy to learn and use, inspired by popular testing frameworks.
 
+## Browser Testing Features
+
+`verifies` offers unique features for in-browser testing, providing a seamless and interactive testing experience that goes beyond traditional CLI-based test runners.
+
+### Interactive Debugging and Code Highlighting
+
+`verifies` integrates directly with your browser's developer tools, allowing for interactive debugging of your tests. When a test fails or you set a breakpoint, you can inspect variables, step through your code, and utilize the full power of the browser's debugger. This is complemented by real-time code highlighting, making it easy to pinpoint the exact line of code being executed.
+
+![Debugging Code Highlight](./docs/debugging%20code%20highlight.png)
+
+### In-Browser Test Case Navigation
+
+Unlike many other test frameworks that primarily run in a command-line interface, `verifies` provides an intuitive in-browser interface for navigating through your test cases. You can easily jump between different test files and individual tests directly within your browser, making it highly efficient to focus on specific tests or re-run them without leaving the browser environment.
+
+### Visual Snapshot Testing with Accept/Reject Workflow
+
+`verifies` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `verifies` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools.
+
+![DOM Snapshot](./docs/dom%20snapshot.png)
+
+
+
 ## Installation
 
-To get started with `chk`, install it as a dev dependency in your project:
+To get started with `verifies`, install it as a dev dependency in your project:
 
 ```bash
-npm install chk --save-dev
+npm install @clapp/verifies --save-dev
 ```
 
 ## Configuration
 
-`chk` is designed to work with modern build tools like Vite. Here is an example of how to configure Vite to use `chk` for your tests:
+`verifies` is designed to work with modern build tools like Vite. Here is an example of how to configure Vite to use `verifies` for your tests:
 
 ```typescript
 // vite.config.mts
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { snapshotPlugin } from 'vite-plugin-snapshot'
 
 export default defineConfig({
-  plugins: [react()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
-  },
+  plugins: [snapshotPlugin()]
+  /// other settings
 })
 ```
 
 In this configuration:
 
-*   `globals: true` allows you to use the `chk` API (`expect`, `test`, etc.) in your test files without importing them.
+*   `globals: true` allows you to use the `verifies` API (`expect`, `test`, etc.) in your test files without importing them.
 *   `environment: 'jsdom'` sets up a simulated browser environment for testing components.
 *   `setupFiles` allows you to specify a setup file to run before your tests, which is a great place for global setup and configuration.
 
 ## Usage
 
-Here is a simple example of how to write a test with `chk`:
+Here is a simple example of how to write a test with `verifies`:
 
 ```typescript
 // src/example.test.ts
-import { expect, test } from 'chk';
+import { expect, test } from 'verifies';
 
 function sum(a: number, b: number) {
   return a + b;

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveResolved` matcher for the `chk` testing framework.
+ * @file Implements the `toHaveResolved` matcher for the `verifies` testing framework.
  * This matcher asserts that a mock function has resolved (returned a value) at least once.
  */
 

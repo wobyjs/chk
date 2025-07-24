@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeDefined` matcher for the `chk` testing framework.
+ * @file Implements the `toBeDefined` matcher for the `verifies` testing framework.
  * This matcher asserts that a value is not `undefined`.
  */
 

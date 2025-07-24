@@ -1,5 +1,5 @@
 /**
- * @file Provides mocking utilities for the `chk` testing framework, allowing for the creation and management of mocked modules.
+ * @file Provides mocking utilities for the `verifies` testing framework, allowing for the creation and management of mocked modules.
  * This enables isolating units of code for testing by controlling their dependencies.
  */
 
