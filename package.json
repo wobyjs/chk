@@ -1,6 +1,6 @@
 {
-    "name": "check",
-    "version": "0.1.0",
+    "name": "verifies",
+    "version": "0.1.1",
     "description": "In browser testing framework",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.mjs",
