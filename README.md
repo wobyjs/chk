@@ -30,7 +30,7 @@ Unlike many other test frameworks that primarily run in a command-line interface
 
 ### Visual Snapshot Testing with Accept/Reject Workflow
 
-`verifies` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `verifies` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools.
+`verifies` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `verifies` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools. The generated snapshot files are stored in the `example/.snapshots/` directory within the project.
 
 ![DOM Snapshot](./docs/dom%20snapshot.png)
 
