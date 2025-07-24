@@ -1,5 +1,7 @@
 # verifies: A Modern TypeScript Testing Toolkit
 
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wongchichong/verifies)
+
 `verifies` is a powerful and flexible testing toolkit designed to streamline unit and integration testing in TypeScript projects. It offers a comprehensive suite of utilities for writing robust and reliable tests with an intuitive, fluent API that will feel familiar to users of modern testing frameworks like Jest or Vitest.
 
 Whether you're building a simple library or a complex application, `verifies` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `verifies` has you covered.
@@ -39,7 +41,7 @@ Unlike many other test frameworks that primarily run in a command-line interface
 To get started with `verifies`, install it as a dev dependency in your project:
 
 ```bash
-npm install @clapp/verifies --save-dev
+npm install verifies --save-dev
 ```
 
 ## Configuration
@@ -57,11 +59,35 @@ export default defineConfig({
 })
 ```
 
-In this configuration:
+To verify the snapshot server is running after configuration, visit `http://localhost:5174/@snapshot-api/version` in your browser. You should see version information if it's active.
 
-*   `globals: true` allows you to use the `verifies` API (`expect`, `test`, etc.) in your test files without importing them.
-*   `environment: 'jsdom'` sets up a simulated browser environment for testing components.
-*   `setupFiles` allows you to specify a setup file to run before your tests, which is a great place for global setup and configuration.
+## Running the Example
+
+To run the example tests, follow these steps:
+
+1.  Clone the repository:
+
+    ```bash
+    git clone https://github.com/wongchichong/verifies.git
+    ```
+
+2.  Navigate to the `example` directory:
+
+    ```bash
+    cd verifies/example
+    ```
+
+3.  Install dependencies:
+
+    ```bash
+    pnpm i
+    ```
+
+4.  Run the tests:
+
+    ```bash
+    pnpm test
+    ```
 
 ## Usage
 
