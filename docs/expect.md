@@ -48,7 +48,7 @@ The `expect` API is the cornerstone of writing effective tests in `chk`. It prov
 *   [.toHaveNthResolvedWith()](#tohaventhresolvedwith)
 *   [.toSatisfy()](#tosatisfy)
 *   [.toThrow()](#tothrow)
-*   [Special Matchers](#special-matchers)
+*   [Static Matchers](#static-matchers)
     *   [`expect.anything`](#expectanything)
     *   [`expect.any(Constructor)`](#expectanyconstructor)
 
@@ -1014,28 +1014,28 @@ test('toContainEqual', () => {
 
 ### .toMatch()
 
-The `.toMatch()` matcher asserts that a string matches a regular expression or a substring. This is useful for validating string formats.
+The `.toMatch()` matcher asserts that a string matches a regular expression or a substring. This is useful for validating string formats, such as URLs, email addresses, or any other pattern-based text.
 
 ```typescript
 test('toMatch', () => {
-    expect('hello world').toMatch(/world/)
-    expect('hello world').toMatch('world')
-    expect('hello world').not.toMatch(/foo/)
-})
+    expect('hello world').toMatch(/world/);
+    expect('hello world').toMatch('world');
+    expect('hello world').not.toMatch(/foo/);
+});
 ```
 
 ### .toMatchObject()
 
-The `.toMatchObject()` matcher asserts that an object matches a subset of the properties of another object. This is useful for checking for the presence of specific keys and values without having to check the entire object.
+The `.toMatchObject()` matcher asserts that an object matches a subset of the properties of another object. This is particularly useful when you want to check for the presence and value of specific keys in an object without needing to verify the entire object structure.
 
 ```typescript
 test('toMatchObject', () => {
-    const obj = { a: 1, b: { c: 2, d: 3, toString }, toString }
-    expect(obj).toMatchObject({ a: 1, toString })
-    expect(obj).toMatchObject({ b: { c: 2, toString }, toString })
-    expect(obj).not.toMatchObject({ a: 2, toString })
-    expect(obj).not.toMatchObject({ b: { e: 4, toString }, toString })
-})
+    const obj = { a: 1, b: { c: 2, d: 3, toString }, toString };
+    expect(obj).toMatchObject({ a: 1, toString });
+    expect(obj).toMatchObject({ b: { c: 2, toString }, toString });
+    expect(obj).not.toMatchObject({ a: 2, toString });
+    expect(obj).not.toMatchObject({ b: { e: 4, toString }, toString });
+});
 ```
 
 ### .toStrictEqual()
@@ -1203,7 +1203,9 @@ test('mockFn.mockRejectedValueOnce', async ({ expect }) => {
 })
 ```
 
-### Special Matchers
+### Static Matchers
+
+Static matchers are accessed directly from the `expect` object and provide powerful, flexible ways to assert conditions in your tests. They are particularly useful when you don't need to assert an exact value, but rather that a value conforms to a certain type or structure.
 
 #### `expect.anything`
 

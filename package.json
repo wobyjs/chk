@@ -1,6 +1,6 @@
 {
-    "name": "chk",
-    "version": "1.0.0",
+    "name": "check",
+    "version": "0.1.0",
     "description": "In browser testing framework",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.mjs",
@@ -22,6 +22,7 @@
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap  --verbose",
         "build": "vite build && pnpm declaration",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
+        "build:examples": "cd example && pnpm build",
         "test": "cd example && pnpm build",
         "deps": "dpdm -T ./src/index.ts "
     },
