@@ -9,14 +9,14 @@ export default defineConfig({
     resolve: {
         alias: {
             // "~": path.resolve(__dirname, "./src"),
-            'woby/jsx-dev-runtime': process.argv.includes('dev') ? path.resolve('../../woby/src/jsx/runtime') : 'woby',
-            'woby/jsx-runtime': process.argv.includes('dev') ? path.resolve('../../woby/src/jsx/runtime') : 'woby',
-            'woby': process.argv.includes('dev') ? path.resolve('../../woby/src') : 'woby',
+            // 'woby/jsx-dev-runtime': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src/jsx/runtime') : 'woby',
+            // 'woby/jsx-runtime': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src/jsx/runtime') : 'woby',
+            // 'woby': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src') : 'woby',
             'package.json': path.resolve(__dirname, './package.json'),
             // Ensure local plugin resolves correctly in monorepo
-            'vite-plugin-snapshot': path.resolve(__dirname, '../../vite-plugin-snapshot/index.js'),
+            'vite-plugin-snapshot': process.argv.includes('dev') ? path.resolve(__dirname, '../../vite-plugin-snapshot/index.js') : 'vite-plugin-snapshot',
             // 'chk/dist': process.argv.includes('dev') ? ('./node_modules/chk/dist') : 'chk/dist',
-            'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
+            // 'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
         },
     },
 

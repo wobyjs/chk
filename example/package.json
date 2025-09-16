@@ -22,10 +22,11 @@
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
         "vite-plugin-clean": "^1.0.0",
-        "vite-plugin-snapshot": "workspace:../../vite-plugin-snapshot"
+        "vite-plugin-snapshot": "^1.0.3"
     },
     "dependencies": {
+        "happy-dom": "^18.0.1",
         "verifies": "workspace:../",
-        "woby": "workspace:../../woby"
+        "woby": "^1.58.32"
     }
 }
