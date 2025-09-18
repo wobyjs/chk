@@ -39,9 +39,9 @@
   },
   "exclude": [
     "vite.config.mts",
+    "vite.config.bin.mts",
     "dist/",
     "**/*.test.ts",
-    "./example",
-    "**/vite.config.mts"
+    "./example"
   ]
 }

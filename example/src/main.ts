@@ -1,12 +1,12 @@
 import { render } from 'woby'
-import { App } from './App'
-import { Verifies } from 'verifies' // Import Check to run tests
+import { App } from './app.test'
+import { Checks } from 'chk' // Import Check to run tests
 import './index.css'
-import 'verifies/index.css'
+import 'chk/index.css'
 
 // Initialize the global chk instance if it's not already
-if (!window.verifies) {
-    window.verifies = new Verifies()
+if (!window.checks) {
+    window.checks = new Checks()
 }
 
 // Render the App component
@@ -17,5 +17,5 @@ render(App(), document.getElementById('app')!)
 // to ensure all Chk components have registered.
 setTimeout(() => {
     console.log("Running Chk tests...")
-    window.verifies.run()
+    window.checks.run({ head: false, noLocation: true })
 }, 500) // Small delay to allow components to render and register

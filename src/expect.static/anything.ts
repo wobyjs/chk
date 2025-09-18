@@ -1,5 +1,5 @@
 /**
- * @file Defines the `anything` static matcher for the `verifies` testing framework.
+ * @file Defines the `anything` static matcher for the `@woby/chk` testing framework.
  * This matcher allows for assertions where any value is considered a match, regardless of its type or content.
  */
 

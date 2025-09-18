@@ -1,5 +1,5 @@
 /**
- * @file Defines the `Expect` class, which is central to the `verifies` testing framework's assertion mechanism.
+ * @file Defines the `Expect` class, which is central to the `@woby/chk` testing framework's assertion mechanism.
  * An `Expect` instance wraps a subject value and provides a fluent interface for applying various matchers (assertions).
  */
 

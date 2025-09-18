@@ -21,4 +21,4 @@ interface ResultProps {
  * @returns A `<span>` element displaying the formatted result indicator.
  */
 export const Result = ({ result }: ResultProps) =>
-    <span style={{ color: result ? 'green' : 'red' }}>{result ? '✓' : '✗'}</span>
+    <span style={{ color: result ? '#D5FF9E' : '#FA7C7A' }}>{result ? '✓' : '✗'}</span>

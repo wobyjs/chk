@@ -8,6 +8,7 @@ import { messengers } from '../messengers'
 import { binary } from '../messenger/console/binary'
 import { isPromise } from 'woby'
 import { Unpromise } from '../types'
+// import sp from 'synchronized-promise'
 
 declare module '../expect' {
     interface Expect<T> {
@@ -27,18 +28,21 @@ declare module '../expect' {
 }
 
 // Defines a getter for the `resolves` property on the `Expect` prototype.
-// When `expect(promise).resolves` is accessed, it awaits the promise.
-// If the promise resolves, it sets the `resolved` flag and updates the subject to the resolved value.
+// When `expect(promise).resolves` is accessed, it returns the same Expect instance
+// but marks it as needing resolution.
 Object.defineProperty(Expect.prototype, 'resolves', {
     get: async function <T>(this: Expect<T>) {
+        // Mark this expectation as needing resolution
         this.resolved = false
+
         try {
             if (isPromise(this.subject)) this.subject = await this.subject
             this.resolved = true
         } catch (e) {
             // Do nothing, it rejected
         }
-        return this as Expect<T>
+
+        return this as Expect<Unpromise<T>>
     }
 })
 

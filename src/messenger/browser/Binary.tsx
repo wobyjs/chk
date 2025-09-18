@@ -28,4 +28,4 @@ interface BinaryProps {
  * @returns A `<span>` element displaying the formatted binary assertion result.
  */
 export const Binary = ({ result, subject, target, operator }: BinaryProps) => // Changed ReactNode to JSX.Element
-    <span style={{ color: result ? 'green' : 'red' }}>{subject} <b>{operator}</b> {target}</span>
+    <span style={{ color: result ? '#D5FF9E' : '#FA7C7A' }}>{subject} <b>{operator}</b> {target}</span>

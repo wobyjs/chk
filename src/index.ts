@@ -1,16 +1,16 @@
 /**
- * @file This is the main entry point for the `verifies` testing library.
+ * @file This is the main entry point for the `@woby/chk` testing library.
  * It re-exports all public modules, making them easily accessible from a single import.
  */
 
-export * from './verifies'
+export * from './checks'
 export * from './expect'
 export * from './index'
 export * from './match'
 export * from './messenger'
 export * from './utils'
-export * from './verifies'
-export * from './verify' // Export the Chk component
+export * from './checks'
+export * from './chk' // Export the Chk component
 export * from './snapshotTest' // Export SnapshotTest if it needs to be accessible
 export * from './csf'
 export * from './fn'

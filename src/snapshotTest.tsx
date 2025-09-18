@@ -87,10 +87,10 @@ export class SnapshotTest extends Test<string> {
         const overallMatch = propsMatch && outputMatch
 
         if (!overallMatch) {
-            snapshotExpect.process('mismatch', false, this.currentOutput, this.expectedSnapshot.output)
+            snapshotExpect.process('mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot mismatch for '${this.snapshotName}'!`, 'color: red; font-weight: bold;')
         } else {
-            snapshotExpect.process('match', true, this.currentOutput, this.expectedSnapshot.output)
+            snapshotExpect.process('match\n', true, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot for '${this.snapshotName}' matches.`, 'color: green; font-weight: bold;')
         }
         const r = this.result

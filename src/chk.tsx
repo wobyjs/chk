@@ -53,7 +53,7 @@ function extractNamedComponent(trace?: string): string | null {
  * @param props The properties for the `Chk` component, including the snapshot name and the children to be tested.
  * @returns The rendered children, wrapped with snapshot testing UI in development mode.
  */
-export function Verify(props: ChkProps) {
+export function Chk(props: ChkProps) {
     const { name, children, ...componentProps } = props
     const isDev = typeof import.meta.env !== 'undefined' && import.meta.env.DEV
     const rejected = $(false)
@@ -81,22 +81,22 @@ export function Verify(props: ChkProps) {
     // Create a new SnapshotTest instance
     const snapshot = new SnapshotTest(compName, serializedComponentProps, renderedOutput, (children as StackTaggedFunction)[SYMBOL_STACK])
 
-    // Add the SnapshotTest instance to window.verifies.modules
-    // This assumes window.verifies is initialized and accessible.
+    // Add the SnapshotTest instance to window.checks.modules
+    // This assumes window.checks is initialized and accessible.
     // In a real application, you might have a more controlled way to register tests.
-    if (window.verifies) {
+    if (window.checks) {
         // Check if a test with this name already exists to avoid duplicates
-        const existingTestIndex = window.verifies.modules.findIndex(m => m.title === name && m instanceof SnapshotTest)
+        const existingTestIndex = window.checks.modules.findIndex(m => m.title === name && m instanceof SnapshotTest)
         if (existingTestIndex !== -1) {
             // If it exists, replace it with the new instance (for re-renders)
-            window.verifies.modules[existingTestIndex] = snapshot
+            window.checks.modules[existingTestIndex] = snapshot
         } else {
             // Otherwise, add it as a new test
-            window.verifies.modules.push(snapshot)
+            window.checks.modules.push(snapshot)
         }
         console.log(`[Chk Dev Mode] Registered/Updated snapshot test for '${name}'.`)
     } else {
-        console.warn("[Chk Dev Mode] window.verifies is not available. Snapshot test not registered.")
+        console.warn("[Chk Dev Mode] window.checks is not available. Snapshot test not registered.")
     }
 
     const ref = $<HTMLDivElement>()

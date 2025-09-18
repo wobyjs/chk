@@ -1,4 +1,4 @@
-import { expect, test, anything, createMockFromModule, req, fn, spyOn, mock } from 'verifies'
+import { expect, test, anything, createMockFromModule, req, fn, spyOn, mock } from 'chk'
 
 // Assuming example.js is a CommonJS module, you might need to adjust how it's imported
 // For simplicity, let's assume it can be imported directly or you'll handle the import mechanism.
@@ -7,7 +7,7 @@ import exampleModule from './example'
 
 const toString = function (this: any) { return JSON.stringify(this) }
 
-test('Sample Test', ({ }) => {
+test('Sample Test (sample.test.ts)', ({ }) => {
     test('Sample 1', {}, ({ }) => {
         expect(1 + 1)["==="](2)
         expect(1 + 10)["==="](expect.anything)
@@ -35,15 +35,15 @@ test('Sample Test', ({ }) => {
         expect(subject.b)["==="](2)
     })
 
-    test('Async operations', ({ expect }) => {
-        test('resolves', async ({ }) => { // use expect here, becaulse lost in await 2nd
+    test('Async operations', ({ }) => {
+        test('resolves', async ({ expect }) => { // use expect here, because lost in await 2nd
             (await expect(Promise.resolve('lemon')).resolves).toBe('lemon');
             (await expect(Promise.resolve('lemon')).resolves).not.toBe('octopus');
             (await expect(Promise.resolve('lemon')).resolves).toBe(expect.anything);
             (await expect(Promise.resolve('lemon')).resolves).not.toBe(expect.anything)
         })
 
-        test('rejects', async ({ }) => { // use expect here, becaulse lost in await 2nd
+        test('rejects', async ({ expect }) => { // use expect here, expect lost in await 2nd
             // const ee = expect
             // const eee = SS.context(EXPECT_SYMBOL);
 

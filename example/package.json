@@ -9,6 +9,7 @@
         "npmjs": "pnpm publish",
         "release": "run-s -c git bump npmjs",
         "preinstall": "npx only-allow pnpm",
+        "declaration": "tsc --declaration --emitDeclarationOnly --outDir dist/types --declarationDir dist/types",
         "build": "vite build",
         "preview": "vite preview",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
@@ -26,7 +27,7 @@
     },
     "dependencies": {
         "happy-dom": "^18.0.1",
-        "verifies": "workspace:../",
+        "chk": "workspace:../",
         "woby": "^1.58.32"
     }
 }

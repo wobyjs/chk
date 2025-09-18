@@ -11,7 +11,7 @@ const config = defineConfig({
     // ],
     // server: {
     //     host: '0.0.0.0', // Allows access from network
-    // },
+    // ],
     // optimizeDeps: {
     //     // Vite needs to know how to handle Woby's JSX transform
     //     include: [], // Remove 'woby' from here to avoid double-loading
@@ -27,6 +27,7 @@ const config = defineConfig({
             'woby': process.argv.includes('dev') ? path.resolve('../woby/src') : 'woby',
 
             'package.json': path.resolve(__dirname, './package.json'),
+            '@woby/chk': process.argv.includes('dev') ? path.resolve('./src') : 'chk',
             // Ensure local plugin resolves correctly in monorepo
             // 'vite-plugin-snapshot': path.resolve(__dirname, '../vite-plugin-snapshot/index.mjs'),
         },
@@ -34,7 +35,7 @@ const config = defineConfig({
     plugins: [tailwindcss() as any],
     build: {
         rollupOptions: {
-            external: ['woby', 'woby/jsx-runtime', 'oby', 'woby/jsx-runtime'],
+            external: ['woby', 'woby/jsx-runtime', 'oby', 'woby/jsx-runtime', 'happy-dom'],
             output: {
                 globals: {
                     'woby': 'woby',

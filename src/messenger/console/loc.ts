@@ -34,6 +34,16 @@ import { Stack, isPromise } from "woby"
 type AsyncFunc = (...args: any[]) => Promise<any>
 
 /**
+ * Options for the loc function
+ */
+interface LocOptions {
+    /** A boolean indicating whether the console group should be collapsed by default. */
+    collapse: boolean
+    /** A boolean indicating whether to use console grouping. If false, use normal log. */
+    group?: boolean
+}
+
+/**
  * Checks if a given function is an asynchronous function.
  * @param fn The function to check.
  * @returns `true` if the function is asynchronous, `false` otherwise.
@@ -53,20 +63,32 @@ function isAsyncFunction(fn: unknown): fn is AsyncFunc {
  * @template T The type of the title or message parts.
  * @template S The type of the message content.
  * @param title The title of the log group, which can be a string, an array of strings, or a 2D array of strings.
- * @param collapse A boolean indicating whether the console group should be collapsed by default.
+ * @param options An object containing options for the log group:
+ *                - collapse: A boolean indicating whether the console group should be collapsed by default.
+ *                - group: A boolean indicating whether to use console grouping. If false, use normal log.
  * @param msg A function that receives a console-like object (`log`, `error`, `warn`) to perform the actual logging.
  *            This function can be synchronous or asynchronous.
  */
-export async function loc<T, S>(title: T | T[] | T[][], collapse: boolean, msg: (p: { log: typeof console.log, error: typeof console.error, warn: typeof console.warn }) => void) {
-    const groupFn = collapse ? console.groupCollapsed : console.group
+export function loc<T, S>(title: T | T[] | T[][], options: LocOptions | boolean, msg: (p: { log: typeof console.log, error: typeof console.error, warn: typeof console.warn }) => void) {
+    // Handle backward compatibility - if options is a boolean, treat it as the collapse parameter
+    const opts: LocOptions = typeof options === 'boolean' ? { collapse: options, group: true } : options
+
+    // If group is false, use normal log instead of grouping
+    if (opts.group === false) {
+        const logFn = console.log
+
+        logFn(...(Array.isArray(title) ? title : [title]))
+        const p = msg(console)
+        return p
+    }
+
+    // Default behavior with grouping
+    const groupFn = opts.collapse ? console.groupCollapsed : console.group
+
     groupFn(...(Array.isArray(title) ? title : [title]))
-
-    if (isPromise(msg) || isAsyncFunction(msg))
-        await msg(console)
-    else
-        msg(console)
-
+    const p = msg(console)
     console.groupEnd()
+    return p
 }
 
 /**
@@ -76,5 +98,5 @@ export async function loc<T, S>(title: T | T[] | T[][], collapse: boolean, msg: 
  * @param title An array of strings to be used as the title for the log.
  */
 export function los<T>(title: T[]) {
-    loc(title, false, ({ log }) => log(new Stack('', 1)))
+    return loc(title, { collapse: false, group: true }, ({ log }) => log(new Stack('', 1)))
 }

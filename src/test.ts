@@ -1,10 +1,10 @@
 /**
- * @file Implements the `Test` class, which represents an individual test suite or a single test case within the `verifies` testing framework.
+ * @file Implements the `Test` class, which represents an individual test suite or a single test case within the `@woby/chk` testing framework.
  * It provides the structure for defining tests, running expectations, and reporting results.
  */
 
 import { $, Stack } from "woby"
-import { Verifies } from "./verifies"
+import { Checks } from "./checks"
 import { Expect } from "./expect"
 import { binary } from "./messenger/console/binary"
 import { check } from './messenger/console/check'
@@ -16,8 +16,8 @@ import { imp, req } from "./mock"
 import { loc } from "./messenger/console/loc"
 
 
-if (!window.verifies)
-    window.verifies = new Verifies()
+if (!window.checks)
+    window.checks = new Checks()
 
 /**
  * The main class for creating and managing a test.
@@ -48,7 +48,7 @@ export class Test<T> {
     /**
      * A reference to the parent `Test` suite or the global `Check` instance.
      */
-    parent!: Test<any> | Verifies
+    parent!: Test<any> | Checks
     /**
      * A stack trace associated with the creation of this test, useful for debugging and reporting file locations.
      */
@@ -134,11 +134,11 @@ export class Test<T> {
         const ctx = { expect, test, subject, parent: this, import: imp, require: req }
         try {
             // TestContext.
-            SS.context({ [TESTCONTEXT_SYMBOL]: ctx }, async () => {
+            return SS.context({ [TESTCONTEXT_SYMBOL]: ctx }, async () => {
                 const p = this.func(ctx)
 
                 if (typeof p === 'object' && typeof p.then === 'function') {
-                    await p
+                    const pp = (await p)
                     this.tested(Math.random())
                 }
 
@@ -157,23 +157,31 @@ export class Test<T> {
 
     /**
      * Generates and displays a formatted report in the console for this test and its nested modules.
-     * @param opts Options for the report, such as whether to include the head (summary).
+     * @param opts Options for the report, such as whether to include the head (summary) and whether to show location info.
      */
-    public async report(opts = { head: false }) {
+    public report(opts = { head: false, noLocation: false }) {
         const { modules } = this
-        const { head } = opts
+        const { head, noLocation } = opts
 
         const f = async () => {
             const { result, title, stack } = this
             // let g = result ? console.groupCollapsed : console.group
             let code = stack.stack.split('\n')
-            loc(check(result, null, null, [title, `[${modules.length}]`]), result, async ({ log }) => {
 
-                log(code[4] ?? code[3])
+            // Show location if result fails, regardless of noLocation setting
+            const showLocation = !noLocation || !result || !!modules.length
 
-                for (const e of modules) {
+            // Use the new options format for loc function
+            return loc(check(result, null, null, [title, `[${modules.length}]`]), { collapse: result, group: showLocation }, ({ log }) => {
+                // Hide this log if noLocation is true and test passed
+                if (showLocation) {
+                    log(`%c${code[4] ?? code[3]}`, 'color:gray')
+                }
+
+                return modules.map(async e => {
                     if (!head && e instanceof Expect) {
-                        e.messengers.forEach(m => {
+                        // e.messengers.forEach(async m =>~
+                        e.messengers.map(m => {
                             const { key, result, subject, target, stack } = m
                             const { title } = e
 
@@ -185,22 +193,34 @@ export class Test<T> {
 
                             // g = result ? console.groupCollapsed : console.group
 
-                            loc(check(result, subject, target, [msg, ...fmt]), !!result, ({ log }) => {
-                                const line = stack.split('\n')[4] ?? stack.split('\n')[3]
-                                // return [[`%c${line.trim()}`, 'text-align: right']]
-                                log(`%c${line.trim()}`, 'text-align: right')
+                            // Show location for individual assertions if result fails, regardless of noLocation setting
+                            const showAssertionLocation = !noLocation || !result
+
+                            // Use the new options format for loc function
+                            return loc(check(result, subject, target, [msg, ...fmt]), { collapse: !!result, group: showAssertionLocation }, ({ log }) => {
+                                const ar = stack.split('\n')
+                                let line = ar[4] ?? ar[3]
+                                if (line.includes('Promise'))
+                                    line = ar[3]
+                                // Hide this log if noLocation is true and assertion passed
+                                if (showAssertionLocation) {
+                                    // return [[`%c${line.trim()}`, 'text-align: right']]
+                                    log(`%c${line.trim()}`, 'text-align: right')
+                                }
                             })
                             // console.groupEnd()
                         })
+                        // )
                     }
                     else if (e instanceof Test) {
-                        await e.report(opts)
+                        return e.report(opts)
                     }
-                }
+                })
+
             })
         }
 
-        await f()
+        return f()
     }
 
     /**
@@ -234,7 +254,7 @@ export class Test<T> {
 }
 
 /**
- * A factory function for creating a `Test` instance and adding it to the global `window.verifies` object.
+ * A factory function for creating a `Test` instance and adding it to the global `window.checks` object.
  * This is the primary way to define new test suites or test cases.
  * @template T The type of the subject or context for the test.
  * @param titleOrSubject The title of the test or the subject under test.
@@ -244,7 +264,7 @@ export class Test<T> {
  */
 export const test: TestFactory = <T>(titleOrSubject: T | string, opt?: TestOptions<T> | TesterType<T>, func?: TesterType<T | string>) => {
     const test = !!func ? new Test(titleOrSubject, opt as any, func) : (!!opt ? new Test(titleOrSubject as any, opt as any) : new Test(titleOrSubject as any))
-    test.parent = window.verifies
-    window.verifies.modules.push(test)
+    test.parent = window.checks
+    window.checks.modules.push(test)
     return test
 }

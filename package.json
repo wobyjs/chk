@@ -1,10 +1,11 @@
 {
-    "name": "verifies",
+    "name": "@woby/chk",
     "version": "0.1.3",
     "description": "In browser testing framework",
-    "main": "./dist/index.umd.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/types/index.d.ts",
+    "bin": {
+        "chk": "./dist/bin/chk.js",
+        "chk-deno": "./dist/bin/chk.ts"
+    },
     "exports": {
         ".": {
             "types": "./dist/types/index.d.ts",
@@ -20,34 +21,44 @@
         "push": "git push",
         "commit": "pnpm bump && pnpm push",
         "npmjs": "pnpm publish",
-        "release": "run-s -c git bump npmjs",
         "preinstall": "npx only-allow pnpm",
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap  --verbose",
-        "build": "vite build && pnpm declaration",
+        "build:lib": "vite build",
+        "build:cli": "vite build --config vite.config.bin.mts",
+        "build": "pnpm build:lib && pnpm build:cli && pnpm declaration",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
         "build:examples": "cd example && pnpm build",
         "build:test": "cd example && pnpm build",
         "test": "cd example && pnpm test",
         "deps": "dpdm -T ./src/index.ts ",
-        "test:console": "deno  --unstable-sloppy-imports --allow-read --allow-net --allow-env example/src/console.ts",
-        "test:watch": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env example/src/console.ts"
+        "debug:console": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/chk.ts ../../example/src/sample.test.ts",
+        "debug:console:app": "deno --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/chk.ts ../../example/src/app.test.tsx",
+        "//debug:watch": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk  src/bin/chk.ts  ../../example/src/app.test.tsx",
+        "watch:console": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/chk.ts ../../example/src/sample.test.ts",
+        "watch:console:app": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/chk.ts ../../example/src/app.test.tsx",
+        "test:console": "deno  --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/chk.ts ../../example/src/sample.test.ts",
+        "test:console:app": "deno  --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/chk.ts ../../example/src/app.test.tsx",
+        "test:watch": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env  src/bin/chk.ts  ../../example/src/app.test.tsx"
     },
     "author": "",
     "license": "ISC",
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.11",
         "@types/node": "^22.13.1",
-        "@vitejs/plugin-react-swc": "^3.10.0",
+        "diff": "^8.0.2",
+        "happy-dom": "^18.0.1",
         "soby": "^15.1.12",
         "tailwindcss": "^4.1.11",
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
-        "vite-plugin-clean": "^1.0.0",
         "vite-plugin-snapshot": "workspace:../vite-plugin-snapshot",
         "woby": "^1.58.32"
     },
     "peerDependencies": {
         "soby": "^15.1.12",
         "woby": "^1.58.32"
+    },
+    "dependencies": {
+        "commander": "^14.0.1"
     }
 }

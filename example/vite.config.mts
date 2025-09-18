@@ -15,8 +15,8 @@ export default defineConfig({
             'package.json': path.resolve(__dirname, './package.json'),
             // Ensure local plugin resolves correctly in monorepo
             'vite-plugin-snapshot': process.argv.includes('dev') ? path.resolve(__dirname, '../../vite-plugin-snapshot/index.js') : 'vite-plugin-snapshot',
-            // 'chk/dist': process.argv.includes('dev') ? ('./node_modules/chk/dist') : 'chk/dist',
-            // 'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
+            // Fix the alias for chk to properly resolve to the built package
+            'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
         },
     },
 
@@ -33,6 +33,7 @@ export default defineConfig({
         //             'woby/jsx-runtime': 'woby/jsx-runtime',
         //         }
         //     }
+        // },
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: './index.html',

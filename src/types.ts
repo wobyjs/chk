@@ -67,6 +67,8 @@ export interface TestOptions<T> {
     surfix?: string
     /** A formatter function to customize how the subject is displayed in the test title. */
     formatter?: (subject: T) => string
+    /** An optional flag to hide location information in the test report. */
+    noLocation?: boolean
 }
 
 /**

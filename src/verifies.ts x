@@ -35,22 +35,20 @@ export class Verifies {
      * Measures and logs the total time taken for report generation.
      * @param opts Options for reporting, e.g., `head` to control report display.
      */
-    async report(opts = { head: false }) {
+    async report(opts = { head: false, noLocation: false }) {
         const now = +new Date()
 
         const { modules } = this
-        const p: Promise<void>[] = []
-        modules.forEach(l => p.push(l.report(opts)))
-        await Promise.all(p)
+        await Promise.all(modules.map(async l => await l.report(opts)))
 
-        console.log(`%c REPORT %c ${(+new Date() - now) / 1000} ms`, 'border: 1px solid gray;font-weight:bold;background-color:yellow', '')
+        console.log(`%c REPORT %c ${(+new Date() - now) / 1000} ms\n\n`, 'border: 1px solid gray;font-weight:bold;background-color:yellow', '')
     }
 
     /**
      * Runs both the test execution and report generation phases sequentially.
      * @param opts Options to be passed to the `report` method.
      */
-    async run(opts = { head: false }) {
+    async run(opts = { head: false, noLocation: false }) {
         await this.test()
         await this.report(opts)
     }
