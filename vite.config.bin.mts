@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import * as path from 'path'
-import { copyFileSync, mkdirSync } from 'fs'
 
 /* BIN CONFIGURATION */
 
@@ -21,24 +20,7 @@ const config = defineConfig({
             },
             input: {
                 chk: path.resolve(__dirname, 'src/bin/chk.ts')
-            },
-            plugins: [{
-                name: 'copy-bin-file',
-                writeBundle() {
-                    try {
-                        // Create dist/bin directory if it doesn't exist
-                        mkdirSync(path.resolve(__dirname, 'dist', 'bin'), { recursive: true })
-
-                        // Copy the source bin file to dist/bin
-                        const srcPath = path.resolve(__dirname, 'src', 'bin', 'chk.ts')
-                        const destPath = path.resolve(__dirname, 'dist', 'bin', 'chk.ts')
-                        copyFileSync(srcPath, destPath)
-                        console.log('✅ Copied bin file to dist/bin/chk.ts')
-                    } catch (error) {
-                        console.error('❌ Failed to copy bin file:', error)
-                    }
-                }
-            }]
+            }
         },
         lib: {
             entry: './src/bin/chk.ts',

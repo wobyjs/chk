@@ -13,7 +13,16 @@
         "build": "vite build",
         "preview": "vite preview",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
-        "test": "vite  --force --mode dev --host"
+        "test": "vite  --force --mode dev --host",
+        "comment": "while debugging, pnpm link -g in ../ before running following command",
+        "debug:console": "chk-watch  src/sample.test.ts",
+        "debug:console:app": "chk-debug src/app.test.tsx",
+        "//debug:watch": "chk-debug-watch src/app.test.tsx",
+        "watch:console": "chk src/sample.test.ts",
+        "watch:console:app": "chk-watch src/app.test.tsx",
+        "test:console": "chk src/sample.test.ts",
+        "test:console:app": "chk src/app.test.tsx",
+        "test:watch": "chk-watch src/app.test.tsx"
     },
     "author": "",
     "license": "ISC",

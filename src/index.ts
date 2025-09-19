@@ -9,6 +9,7 @@ export * from './index'
 export * from './match'
 export * from './messenger'
 export * from './utils'
+export * from './utils/snapshotUtils'
 export * from './checks'
 export * from './chk' // Export the Chk component
 export * from './snapshotTest' // Export SnapshotTest if it needs to be accessible

@@ -1,30 +1,24 @@
-export function Hello({ name }: { name: string }) {
-    return <div>Hello, {name}!</div>
-}
-
-
-export interface MyComponentProps {
+// Example component test file
+export const MyComponent = ({ message, count, timestamp }: {
     message: string
     count: number
     timestamp: Date
-}
-
-export function MyComponent({ timestamp = new Date(), ...props }: MyComponentProps) {
+}) => {
     return (
-        <div>
-            <h1>Hello, {props.message}!</h1>
-            <p>Count: {props.count}</p>
-            <p>Timestamp: {timestamp.toISOString()}</p>
-            <button>Click Me</button>
+        <div class="my-component">
+            <h1>My Component</h1>
+            <p>Message: {message}</p>
+            <p>Count: {count}</p>
+            <p>Timestamp: {timestamp?.toString()}</p>
         </div>
     )
 }
 
-
-// describe('Hello component', () => {
-//     it('renders with name', () => {
-//         // In a real test, you would render and snapshot
-//         const el = <Hello name="World" />
-//         // expect(el).toMatchSnapshot() // To be implemented
-//     })
-// })
+export const AnotherComponent = () => {
+    return (
+        <div>
+            <h2>Another Component</h2>
+            <p>This is another component</p>
+        </div>
+    )
+}

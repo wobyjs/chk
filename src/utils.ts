@@ -75,3 +75,31 @@ export function areDeeplyEqual(obj1: any, obj2: any): boolean {
     // For more robust comparison, a dedicated deep-equal library might be used.
     return JSON.stringify(obj1) === JSON.stringify(obj2)
 }
+
+
+/**
+ * Type representing a quoted string with either single or double quotes
+ * @example
+ * ```typescript
+ * const quoted: QuotedString = '"hello world"';
+ * const singleQuoted: QuotedString = "'hello world'";
+ * ```
+ */
+type QuotedString = `"${string}"` | `'${string}'`
+
+/**
+ * Removes surrounding quotes from a string if they exist.
+ * 
+ * @param str - The string to unquote
+ * @returns The string without surrounding quotes, or the original string if no quotes are found
+ * 
+ * @example
+ * ```typescript
+ * unquote('"hello"') // returns 'hello'
+ * unquote("'world'") // returns 'world'
+ * unquote('test')    // returns 'test'
+ * ```
+ */
+export function unquote<T extends string>(str: T): string {
+    return str.replace(/^(['"])(.*)\1$/, '$2')
+}

@@ -175,6 +175,7 @@ export class Test<T> {
             return loc(check(result, null, null, [title, `[${modules.length}]`]), { collapse: result, group: showLocation }, ({ log }) => {
                 // Hide this log if noLocation is true and test passed
                 if (showLocation) {
+                    // log(`code5 %c${this.subject} ${code}`, 'color:gray')
                     log(`%c${code[4] ?? code[3]}`, 'color:gray')
                 }
 

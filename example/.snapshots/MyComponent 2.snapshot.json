@@ -1,8 +1,0 @@
-{
-  "props": {
-    "message": "Woby",
-    "count": 2,
-    "timestamp": "2025-01-01T16:00:00.000Z"
-  },
-  "html": "<div><h1>Hello, Woby!</h1><p>Count: 2</p><p>Timestamp: 2025-01-01T16:00:00.000Z</p><button>Click Me</button></div>"
-}

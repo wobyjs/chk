@@ -10,7 +10,9 @@
 import { type JSX, render, SYMBOL_STACK, StackTaggedFunction, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER } from 'woby'
 import { serializeProps, serializeOutput } from './utils'
 import { SnapshotTest } from './snapshotTest' // Import SnapshotTest
-import './index.css'
+
+if (!window.isDeno)
+    import('./index.css')
 
 DEBUGGER.test = true
 /**

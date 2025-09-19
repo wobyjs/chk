@@ -4,9 +4,9 @@
  */
 
 import { Test } from './test'
-import { areDeeplyEqual } from './utils' // Import the new utility function
+import { areDeeplyEqual, unquote } from './utils' // Import the new utility function
 import { Expect } from './expect' // Import Expect to create assertions
-import { loadSnapshot, saveSnapshot } from './browserSnapshot'
+import { loadSnapshot, saveSnapshot } from './utils/snapshotUtils'
 import { $, Stack } from 'woby'
 
 /**
@@ -44,7 +44,7 @@ export class SnapshotTest extends Test<string> {
         super(name, stack)
         this.snapshotName = name
         this.currentProps = currentProps
-        this.currentOutput = currentOutput
+        this.currentOutput = unquote(currentOutput)
 
     }
 
@@ -60,7 +60,7 @@ export class SnapshotTest extends Test<string> {
         if (loadedSnapshot) {
             this.expectedSnapshot = {
                 props: loadedSnapshot.props,
-                output: loadedSnapshot.html,
+                output: unquote(loadedSnapshot.html),
             }
         }
 
@@ -87,10 +87,10 @@ export class SnapshotTest extends Test<string> {
         const overallMatch = propsMatch && outputMatch
 
         if (!overallMatch) {
-            snapshotExpect.process('mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
+            snapshotExpect.process('html mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot mismatch for '${this.snapshotName}'!`, 'color: red; font-weight: bold;')
         } else {
-            snapshotExpect.process('match\n', true, this.currentOutput, this.expectedSnapshot.output)
+            snapshotExpect.process('html match\n', true, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot for '${this.snapshotName}' matches.`, 'color: green; font-weight: bold;')
         }
         const r = this.result
@@ -103,8 +103,10 @@ export class SnapshotTest extends Test<string> {
      * This is typically called when a snapshot test fails and the new output is accepted as the correct one.
      */
     async save() {
-        await saveSnapshot(this.snapshotName, this.currentProps, this.currentOutput)
-        await this.test()
+        try {
+            await saveSnapshot(this.snapshotName, this.currentProps, this.currentOutput)
+            await this.test()
+        } catch { }
     }
 
     // /**

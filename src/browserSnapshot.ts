@@ -34,44 +34,6 @@ export function compareSnapshot(expected: string, actual: string): SnapshotResul
     }
 }
 
-/**
- * Loads a snapshot from the server using the Vite dev server.
- * @param id The unique identifier for the snapshot.
- * @returns A promise that resolves to the snapshot content, or `undefined` if the snapshot could not be loaded.
- */
-export async function loadSnapshot(id: string): Promise<{ props: string, html: string } | undefined> {
-    try {
-        const res = await fetch(`/@snapshot-api?id=${encodeURIComponent(id)}`)
-        if (!res.ok) {
-            return undefined
-        }
-        const text = await res.text()
-        try {
-            const json = JSON.parse(text)
-            return json
-        } catch (e) {
-            return undefined
-        }
-    } catch (e) {
-        return undefined
-    }
-}
-
-/**
- * Saves a snapshot to the server using the Vite dev server.
- * @param id The unique identifier for the snapshot.
- * @param props The props associated with the snapshot.
- * @param html The HTML content of the snapshot.
- */
-export async function saveSnapshot(id: string, props: string, html: string): Promise<void> {
-    try {
-        // console.log('[browserSnapshot] saveSnapshot: saving', { id, props, html })
-        await fetch(`/@snapshot-api?id=${encodeURIComponent(id)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ props, html })
-        })
-    } catch (e) {
-        console.error('[browserSnapshot] saveSnapshot: error', e)
-    }
-}
+// Re-export the environment-agnostic snapshot utilities
+// This maintains backward compatibility while using the new implementation
+export { loadSnapshot, saveSnapshot } from './utils/snapshotUtils'

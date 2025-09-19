@@ -134,6 +134,7 @@ declare global {
          * The global instance of the `Check` test runner.
          */
         checks: Checks
+        isDeno: boolean
     }
 }
 
