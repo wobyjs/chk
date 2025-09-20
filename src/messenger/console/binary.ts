@@ -3,12 +3,11 @@
  * This messenger formats the subject, operator, and target values, applying color based on the assertion result.
  */
 
-import { format } from '../../utils'
+import { format, highlightHtml, showDiff } from '../../utils'
 import { Messenger } from '../../messenger'
 import { ResultType } from '../../expect'
 import { diffChars } from 'diff'
-import { highlight, plain, Theme } from 'cli-highlight'
-import { cyanBright, yellowBright, greenBright, magentaBright, whiteBright, gray } from 'ansis'
+import { plain } from 'cli-highlight'
 
 
 /**
@@ -26,49 +25,21 @@ export const binary = (operator: string): Messenger<string> =>
         const sp = operator[operator.length - 1] === '\n' ? '' : ' '
         const nl = operator[operator.length - 1] === '\n' ? '\n' : ''
         const isHtml = operator.startsWith('html')
+        const [o, n] = isHtml ? ['- ', '+ '] : ['', '']
 
-        const hf = (s: any) => isHtml ? highlight(s, {
-            language: 'xml', ignoreIllegals: true, theme: {
-                tag: cyanBright,         // HTML tags like <div>
-                name: yellowBright,      // Attribute names like class, id
-                string: greenBright,     // Attribute values like "box"
-                attr: magentaBright,     // Optional: differentiate attr vs name
-                punctuation: gray,       // Symbols like <, >, /, =
-                default: whiteBright,    // Fallback for unstyled tokens
-            } as Theme
-        }) : format(s)
+        const hf = (s: any) => isHtml ? highlightHtml(s) : format(s)
+        //const d = showDiff(hf(subject as string), hf(target as string))
+        if (typeof subject === 'string' && typeof target === 'string' && !result) {
+            const d = showDiff(subject as string, target as string)
+            const { formatted, styles } = d
 
-        try {
-            // For string comparisons, show character-level differences
-            if (typeof subject === 'string' && typeof target === 'string' && !result) {
-                const diffs = diffChars(target, subject)
-                const formattedDiffs = diffs.map(part => {
-                    if (part.added) {
-                        return `%c${part.value}%c`
-                    } else if (part.removed) {
-                        return `%c${part.value}%c`
-                    } else {
-                        return part.value
-                    }
-                }).join('')
-
-                const styles = [] as string[]
-                diffs.forEach(part => {
-                    if (part.added) {
-                        styles.push('color: #D5FF9E;')
-                        styles.push('') // Reset style
-                    } else if (part.removed) {
-                        styles.push('color: #FA7C7A;')
-                        styles.push('') // Reset style
-                    }
-                })
-                // console.log(hf(s as string))
-                return [`${nl}%c${hf(s as string)} %c${operator}${sp}%c${hf(formattedDiffs)}`, 'font-weight:normal', operatorColor, 'color:notset', ...styles]
-            }
-
-            return [`${nl}%c${hf(s)} %c${operator}${sp}%c${hf(target)}`, 'font-weight:normal', operatorColor, 'font-weight:normal']
+            if (isHtml)
+                return [`${nl}%c${o}${hf(s as string)} %c${operator}${sp}%c${n}${hf(formatted)}`, 'font-weight:normal', operatorColor, 'color:notset', ...styles]
+            return [`${nl}%c${hf(s as string)} %c${operator}${sp}%c${hf(target)}`, 'font-weight:normal', operatorColor, 'color:notset', ...styles]
         }
-        catch (e) {
-            console.error(e)
-        }
+
+        return [`${nl}%c${hf(s)} %c${operator}${sp}%c${hf(target)}`, 'font-weight:normal', operatorColor, 'font-weight:normal']
+
+        // return [`${nl}%c${o}${hf(s as string)} %c${operator}${sp}%c${n}${hf(formatted)}`, 'font-weight:normal', operatorColor, 'color:notset', ...styles]
+
     }

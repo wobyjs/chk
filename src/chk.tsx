@@ -7,7 +7,7 @@
 // Add vite/client types for import.meta.env
 /// <reference types="vite/client"/>
 
-import { type JSX, render, SYMBOL_STACK, StackTaggedFunction, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER } from 'woby'
+import { type JSX, render, SYMBOL_STACK, StackTaggedFunction, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement } from 'woby'
 import { serializeProps, serializeOutput } from './utils'
 import { SnapshotTest } from './snapshotTest' // Import SnapshotTest
 
@@ -152,3 +152,5 @@ export function Chk(props: ChkProps) {
     //     return children
     // }
 }
+
+customElement('chk', Chk, 'name')

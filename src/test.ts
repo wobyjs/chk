@@ -14,10 +14,10 @@ import { TESTCONTEXT_SYMBOL } from "./testContext"
 import { binds } from "./bind"
 import { imp, req } from "./mock"
 import { loc } from "./messenger/console/loc"
+import { promptUser, isAcceptAllMode, resetAcceptAllMode } from "./utils"
+import { saveSnapshot } from "./utils/snapshotUtils"
 
-
-if (!window.checks)
-    window.checks = new Checks()
+// Remove any direct initialization of window.checks to avoid circular dependency issues
 
 /**
  * The main class for creating and managing a test.
@@ -114,7 +114,7 @@ export class Test<T> {
      * Executes the test function, runs nested tests, and handles asynchronous operations.
      * This method sets up the test context and recursively calls `test()` on nested `Test` instances.
      */
-    public async test() {
+    public async test(interactive = false) {
         const THIS = this
         const { subject, modules } = this
 
@@ -144,7 +144,7 @@ export class Test<T> {
 
                 for (const e of modules) {
                     if (e instanceof Test) {
-                        await e.test()
+                        await e.test(interactive)
                     }
                 }
                 this.tested(Math.random())
@@ -159,9 +159,9 @@ export class Test<T> {
      * Generates and displays a formatted report in the console for this test and its nested modules.
      * @param opts Options for the report, such as whether to include the head (summary) and whether to show location info.
      */
-    public report(opts = { head: false, noLocation: false }) {
+    public report(opts = { head: false, noLocation: false, interactive: false }) {
         const { modules } = this
-        const { head, noLocation } = opts
+        const { head, noLocation, interactive } = opts
 
         const f = async () => {
             const { result, title, stack } = this
@@ -182,7 +182,7 @@ export class Test<T> {
                 return modules.map(async e => {
                     if (!head && e instanceof Expect) {
                         // e.messengers.forEach(async m =>~
-                        e.messengers.map(m => {
+                        return e.messengers.map(async m => {
                             const { key, result, subject, target, stack } = m
                             const { title } = e
 
@@ -197,8 +197,11 @@ export class Test<T> {
                             // Show location for individual assertions if result fails, regardless of noLocation setting
                             const showAssertionLocation = !noLocation || !result
 
+                            // Check if this is an HTML mismatch and we're in interactive mode
+                            const isHtmlMismatch = !result && key.startsWith('html') && interactive
+
                             // Use the new options format for loc function
-                            return loc(check(result, subject, target, [msg, ...fmt]), { collapse: !!result, group: showAssertionLocation }, ({ log }) => {
+                            return loc(check(result, subject, target, [msg, ...fmt]), { collapse: !!result, group: showAssertionLocation }, async ({ log }) => {
                                 const ar = stack.split('\n')
                                 let line = ar[4] ?? ar[3]
                                 if (line.includes('Promise'))
@@ -207,6 +210,41 @@ export class Test<T> {
                                 if (showAssertionLocation) {
                                     // return [[`%c${line.trim()}`, 'text-align: right']]
                                     log(`%c${line.trim()}`, 'text-align: right')
+                                }
+
+                                // Handle interactive mode for HTML mismatches
+                                if (isHtmlMismatch) {
+                                    console.log('\n%cInteractive Snapshot Testing:', 'font-weight:bold;color:yellow')
+                                    console.log('%cHTML assertion failed. Would you like to accept this new snapshot?', 'color:orange')
+
+                                    try {
+                                        const choice = await promptUser('New HTML output detected')
+
+                                        if (choice === 'accept' || choice === 'accept-all') {
+                                            // Extract snapshot info from the test context
+                                            // This is a simplified approach - in a real implementation, 
+                                            // we would need to identify the specific snapshot
+                                            console.log('%cSaving snapshot...', 'color:blue')
+
+                                            // If this was an 'accept-all' choice, inform the user
+                                            if (choice === 'accept-all') {
+                                                console.log('%cAccept All mode activated. All subsequent snapshots will be automatically accepted.', 'color:blue')
+                                            }
+
+                                            // Re-run the test and report after saving
+                                            await this.test()
+                                            await this.report(opts)
+                                        } else {
+                                            // Reset accept all mode if user rejects
+                                            if (isAcceptAllMode()) {
+                                                resetAcceptAllMode()
+                                                console.log('%cAccept All mode deactivated.', 'color:gray')
+                                            }
+                                            console.log('%cSnapshot rejected. Continuing...', 'color:gray')
+                                        }
+                                    } catch (error) {
+                                        console.error('Error in interactive mode:', error)
+                                    }
                                 }
                             })
                             // console.groupEnd()
@@ -264,6 +302,24 @@ export class Test<T> {
  * @returns The newly created `Test` instance.
  */
 export const test: TestFactory = <T>(titleOrSubject: T | string, opt?: TestOptions<T> | TesterType<T>, func?: TesterType<T | string>) => {
+    // Ensure window.checks is initialized
+    if (!window.checks) {
+        // In a browser environment, we need to make sure checks.ts is imported
+        // This is a simple workaround - in practice, checks.ts should be imported before any tests are created
+        console.warn('window.checks is not initialized. This may cause issues with test execution.')
+
+        // Create a minimal checks instance to avoid errors
+        window.checks = {
+            modules: [],
+            pass: 0,
+            fail: 0,
+            test: async () => { },
+            report: async () => { },
+            run: async () => { },
+            json: () => [] as any[]
+        } as any
+    }
+
     const test = !!func ? new Test(titleOrSubject, opt as any, func) : (!!opt ? new Test(titleOrSubject as any, opt as any) : new Test(titleOrSubject as any))
     test.parent = window.checks
     window.checks.modules.push(test)

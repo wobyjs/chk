@@ -4,7 +4,7 @@
  */
 
 import { Chk } from './chk'
-import { JSX, Stack } from 'woby'
+import { customElement, JSX, Stack } from 'woby'
 
 type Component = (props: any) => JSX.Element
 type Module = Record<string, Component>
@@ -35,3 +35,5 @@ export function Csf({ module, path }: { module: Module, path?: string }): JSX.Ch
 
     return ret
 }
+
+customElement('csf', Csf, 'module', 'path')

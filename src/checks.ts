@@ -5,6 +5,8 @@
 
 import { type Test } from "./test"
 import { type Expect } from "./expect"
+import { SnapshotTest } from "./snapshotTest"
+import { resetAcceptAllMode } from "./utils"
 
 /**
  * The `Check` class manages and executes a collection of test modules.
@@ -23,11 +25,29 @@ export class Checks {
      * Executes all registered test modules.
      * Measures and logs the total time taken for test execution.
      */
-    public async test() {
+    public async test(interactive = false) {
         const now = +new Date()
 
         const { modules } = this
-        await Promise.all(modules.map(async l => await l.test()))
+        // Run tests sequentially in interactive mode to prevent concurrent prompts
+        if (interactive) {
+            for (const l of modules) {
+                if (l instanceof SnapshotTest) {
+                    await l.test(interactive)
+                } else {
+                    await l.test()
+                }
+            }
+        } else {
+            // Run tests concurrently in non-interactive mode for better performance
+            await Promise.all(modules.map(async l => {
+                if (l instanceof SnapshotTest) {
+                    await l.test(interactive)
+                } else {
+                    await l.test()
+                }
+            }))
+        }
 
         console.log(`%c TEST %c ${(+new Date() - now) / 1000} ms`, 'border: 1px solid gray;font-weight:bold;background-color:yellow', '')
     }
@@ -37,7 +57,7 @@ export class Checks {
      * Measures and logs the total time taken for report generation.
      * @param opts Options for reporting, e.g., `head` to control report display.
      */
-    async report(opts = { head: false, noLocation: false }) {
+    async report(opts = { head: false, noLocation: false, interactive: false }) {
         const now = +new Date()
 
         // Reset counters
@@ -45,7 +65,15 @@ export class Checks {
         this.fail = 0
 
         const { modules } = this
-        await Promise.all(modules.map(async l => await l.report(opts)))
+        // Run reports sequentially in interactive mode to prevent concurrent prompts
+        if (opts.interactive) {
+            for (const l of modules) {
+                await l.report(opts)
+            }
+        } else {
+            // Run reports concurrently in non-interactive mode for better performance
+            await Promise.all(modules.map(async l => await l.report(opts)))
+        }
 
         // Accumulate pass/fail counts from all modules
         modules.forEach(module => {
@@ -56,36 +84,14 @@ export class Checks {
     }
 
     /**
-     * Recursively accumulates pass/fail counts from a test module and its nested modules.
-     * @param module The test module to accumulate results from.
-     */
-    private accumulateResults(module: Test<any>) {
-        // Count expectations in this module
-        module.modules.forEach(subModule => {
-            if ('messengers' in subModule) {
-                // For expectations, count each messenger (assertion)
-                const expectModule = subModule as Expect<any>
-                expectModule.messengers.forEach(messenger => {
-                    if (messenger.result === true) {
-                        this.pass++
-                    } else if (messenger.result === false) {
-                        this.fail++
-                    }
-                    // "info" and "warn" results are not counted as pass/fail
-                })
-            } else if ('modules' in subModule) {
-                // For nested tests, recursively accumulate their results
-                this.accumulateResults(subModule as Test<any>)
-            }
-        })
-    }
-
-    /**
      * Runs both the test execution and report generation phases sequentially.
      * @param opts Options to be passed to the `report` method.
      */
-    async run(opts = { head: false, noLocation: false }) {
-        await this.test()
+    async run(opts = { head: false, noLocation: false, interactive: false }) {
+        // Reset the accept all mode at the beginning of each test run
+        resetAcceptAllMode()
+
+        await this.test(opts.interactive)
         await this.report(opts)
 
         // Log the pass/fail counts with colorful output
@@ -116,6 +122,31 @@ export class Checks {
     }
 
     /**
+     * Recursively accumulates pass/fail counts from a test module and its nested modules.
+     * @param module The test module to accumulate results from.
+     */
+    private accumulateResults(module: Test<any>) {
+        // Count expectations in this module
+        module.modules.forEach(subModule => {
+            if ('messengers' in subModule) {
+                // For expectations, count each messenger (assertion)
+                const expectModule = subModule as Expect<any>
+                expectModule.messengers.forEach(messenger => {
+                    if (messenger.result === true) {
+                        this.pass++
+                    } else if (messenger.result === false) {
+                        this.fail++
+                    }
+                    // "info" and "warn" results are not counted as pass/fail
+                })
+            } else if ('modules' in subModule) {
+                // For nested tests, recursively accumulate their results
+                this.accumulateResults(subModule as Test<any>)
+            }
+        })
+    }
+
+    /**
      * Returns a JSON representation of the test results from all modules.
      * @returns An array of JSON objects, each representing the results of a test module.
      */
@@ -139,5 +170,7 @@ declare global {
 }
 
 // Initialize the global `checks` instance if it doesn't already exist.
-if (!window.checks)
+// Ensure this initialization happens regardless of module import order
+if (typeof window !== 'undefined' && !window.checks) {
     window.checks = new Checks()
+}

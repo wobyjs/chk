@@ -69,6 +69,8 @@ export interface TestOptions<T> {
     formatter?: (subject: T) => string
     /** An optional flag to hide location information in the test report. */
     noLocation?: boolean
+    /** An optional flag to enable interactive mode for snapshot testing. */
+    interactive?: boolean
 }
 
 /**

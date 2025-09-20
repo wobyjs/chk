@@ -45,6 +45,7 @@ export default async function run() {
                 .argument('[files...]', 'test files to run (supports glob patterns like *.test.ts)')
                 .option('-w, --watch', 'watch files for changes')
                 .option('-v, --verbose', 'output verbose logging')
+                .option('-i, --interactive', 'interactive mode for snapshot testing')
                 .action(async (files, options) => {
                     // If no files specified, find and run all *.test.ts* files
                     if (files.length === 0) {
@@ -117,22 +118,21 @@ export default async function run() {
                             console.error(`Failed to import ${file}:`, error)
                         }
                     }
+
+                    // Run tests with the provided options
+                    console.log("✅ Test file(s) imported successfully")
+                    console.log("✅ Tests created successfully, running tests...")
+                    await window.checks.run({ head: false, noLocation: true, interactive: options.interactive || false })
+                    console.log("🚀 Tests completed!")
                 })
 
             // Parse command line arguments (assuming Node.js environment)
             const args = process.argv.slice(2)
 
             await program.parseAsync(args, { from: 'user' })
-
-            console.log("✅ Test file(s) imported successfully")
         } catch (error: any) {
             console.error("❌ Failed to import test file(s):", error)
         }
-
-        console.log("✅ Tests created successfully, running tests...")
-        await window.checks.run({ head: false, noLocation: true })
-        console.log("🚀 Tests completed!")
-
     } catch (error) {
         console.error("💥 Error in run function:", error)
     }
@@ -214,7 +214,7 @@ async function expandGlobPatterns(patterns: string[]): Promise<string[]> {
                 await fs.access(pattern)
                 expandedFiles.push(pattern)
             } catch {
-                console.warn(`File not found: ${pattern}`)
+                console.warn(`%cFile not found: %c${pattern}`, 'color: #FA7C7A', '')
             }
             continue
         }

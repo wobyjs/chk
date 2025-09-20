@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxImportSource": "woby"
+    },
+    "imports": {
+        "woby": "npm:woby"
+    }
+}

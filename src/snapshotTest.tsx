@@ -4,10 +4,12 @@
  */
 
 import { Test } from './test'
-import { areDeeplyEqual, unquote } from './utils' // Import the new utility function
+import { areDeeplyEqual, unquote, highlightHtml, showDiff, isAcceptAllMode, resetAcceptAllMode } from './utils' // Import the new utility function
 import { Expect } from './expect' // Import Expect to create assertions
 import { loadSnapshot, saveSnapshot } from './utils/snapshotUtils'
+import { promptUser } from './utils'
 import { $, Stack } from 'woby'
+import { diffChars } from 'diff'
 
 /**
  * Defines the structure of a snapshot file, which contains the props and output of a component for a given state.
@@ -53,7 +55,7 @@ export class SnapshotTest extends Test<string> {
      * and updating the test result based on the comparison.
      * If no snapshot exists, it creates a new one.
      */
-    public async test() {
+    public async test(interactive = false) {
         this.modules = []
 
         const loadedSnapshot = await loadSnapshot(this.snapshotName)
@@ -64,7 +66,7 @@ export class SnapshotTest extends Test<string> {
             }
         }
 
-        this.loadedSnapshot(this.expectedSnapshot?.output ?? <div class='font-bold text-orange-400'>Saving initial snapshot</div>)
+        this.loadedSnapshot(this.expectedSnapshot?.output ?? 'Saving initial snapshot')
 
         // Create an Expect instance to manage the result of the snapshot comparison
         const snapshotExpect = new Expect<string>(this.currentOutput, `Snapshot for '${this.snapshotName}'`, this)
@@ -75,7 +77,7 @@ export class SnapshotTest extends Test<string> {
             snapshotExpect.process('newSnapshot', true, this.currentOutput, 'No existing snapshot')
             console.log(`%c[SnapshotTest] No existing snapshot for '${this.snapshotName}'. New snapshot created.`, 'color: orange; font-weight: bold;')
             await this.save()
-            this.loadedSnapshot(this.expectedSnapshot?.output ?? <div class='font-bold text-orange-400'>Saving initial snapshot. Done...</div>)
+            this.loadedSnapshot(this.expectedSnapshot?.output ?? 'Saving initial snapshot. Done...')
             return
         }
 
@@ -89,6 +91,42 @@ export class SnapshotTest extends Test<string> {
         if (!overallMatch) {
             snapshotExpect.process('html mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot mismatch for '${this.snapshotName}'!`, 'color: red; font-weight: bold;')
+
+            // Handle interactive mode for snapshot mismatches
+            if (interactive) {
+                console.log('\n%cInteractive Snapshot Testing:', 'font-weight:bold;color:yellow')
+                console.log(`%cSnapshot mismatch detected for '${this.snapshotName}'`, 'color:orange')
+
+                // Show a simple character-level diff
+                this.showDiff(this.showHtml(this.currentOutput), this.showHtml(this.expectedSnapshot.output))
+
+                console.log('%cCurrent output differs from saved snapshot.', 'color:orange')
+
+                try {
+                    const choice = await promptUser('Do you want to accept this new snapshot?')
+
+                    if (choice === 'accept' || choice === 'accept-all') {
+                        console.log('%cAccepting new snapshot...', 'color:blue')
+                        await this.save()
+                        console.log('%cSnapshot updated successfully!', 'color:green')
+                        // Update the expectation result after saving
+                        snapshotExpect.process('html match\n', true, this.currentOutput, this.expectedSnapshot.output)
+                        // If this was an 'accept-all' choice, inform the user
+                        if (choice === 'accept-all') {
+                            console.log('%cAccept All mode activated. All subsequent snapshots will be automatically accepted.', 'color:blue')
+                        }
+                    } else {
+                        // Reset accept all mode if user rejects
+                        if (isAcceptAllMode()) {
+                            resetAcceptAllMode()
+                            console.log('%cAccept All mode deactivated.', 'color:gray')
+                        }
+                        console.log('%cSnapshot rejected. Keeping existing snapshot.', 'color:gray')
+                    }
+                } catch (error) {
+                    console.error('Error in interactive mode:', error)
+                }
+            }
         } else {
             snapshotExpect.process('html match\n', true, this.currentOutput, this.expectedSnapshot.output)
             // console.log(`%c[SnapshotTest] Snapshot for '${this.snapshotName}' matches.`, 'color: green; font-weight: bold;')
@@ -96,6 +134,29 @@ export class SnapshotTest extends Test<string> {
         const r = this.result
 
         this.tested(Math.random())
+    }
+
+    /**
+     * Shows HTML with syntax highlighting using the same technique as binary.ts
+     * @param html The HTML string to display
+     */
+    private showHtml(html: string) {
+        return highlightHtml(html)
+    }
+
+    /**
+     * Shows a character-level diff between two strings using the same technique as binary.ts
+     * @param current The current output
+     * @param expected The expected output
+     */
+    private showDiff(current: string, expected: string) {
+        console.log('\n%cDiff (expected -> current):', 'font-weight:bold')
+
+        const diffResult = showDiff(current, expected)
+
+        console.log('- ' + current)
+        console.log('+ ' + diffResult.formatted, ...diffResult.styles)
+        console.log('') // Add a blank line for better readability
     }
 
     /**
