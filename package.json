@@ -2,6 +2,9 @@
     "name": "@woby/chk",
     "version": "0.1.3",
     "description": "In browser testing framework",
+    "publishConfig": {
+        "access": "public"
+    },
     "bin": {
         "chk": "./chk.CMD",
         "chk-watch": "./chk-watch.CMD",
@@ -19,7 +22,7 @@
     },
     "scripts": {
         "run this alone, then commit": "",
-        "this": "git-cliff > CHANGELOG.md && git-commit-m",
+        "git": "git-cliff > CHANGELOG.md && git-commit-m",
         "bump": "pnpm version patch",
         "push": "git push",
         "commit": "pnpm bump && pnpm push",
@@ -28,16 +31,13 @@
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap  --verbose",
         "build:lib": "vite build",
         "build:cli": "vite build --config vite.config.bin.mts",
-        "build": "pnpm build:lib && pnpm build:cli && pnpm declaration",
+        "build": "pnpm build:lib && pnpm build:cli && pnpm declaration && pnpm link -g",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
         "build:examples": "cd example && pnpm build",
         "build:test": "cd example && pnpm build",
         "dev": "cd example && pnpm dev",
         "deps": "dpdm -T ./src/index.ts ",
-        "chk": "deno --unstable-sloppy-imports --allow-read --allow-net --allow-env --allow-sys --allow-write  src/bin/chk.ts",
-        "chk-watch": "deno --watch --unstable-sloppy-imports --allow-read --allow-net --allow-env --allow-sys --allow-write  src/bin/chk.ts",
-        "chk-debug": "deno --inspect-brk --unstable-sloppy-imports --allow-read --allow-net --allow-env --allow-sys --allow-write  src/bin/chk.ts",
-        "chk-debug-watch": "deno --watch --inspect-brk --unstable-sloppy-imports --allow-read --allow-net --allow-env --allow-sys --allow-write  src/bin/chk.ts",
+        "html": "cd example && pnpm test:html",
         "node-chk": "node dist/bin/chk.js"
     },
     "author": "",
@@ -45,18 +45,18 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.11",
         "@types/node": "^22.13.1",
+        "@types/react": "^19.1.13",
         "diff": "^8.0.2",
         "happy-dom": "^18.0.1",
         "soby": "^15.1.12",
         "tailwindcss": "^4.1.11",
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
-        "vite-plugin-snapshot": "workspace:../vite-plugin-snapshot",
-        "woby": "^1.58.32"
+        "vite-plugin-snapshot": "workspace:../vite-plugin-snapshot"
     },
     "peerDependencies": {
         "soby": "^15.1.12",
-        "woby": "^1.58.32"
+        "woby": "^1.58.33"
     },
     "dependencies": {
         "ansis": "^4.1.0",

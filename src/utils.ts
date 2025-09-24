@@ -249,3 +249,22 @@ export function showDiff(current: string, expected: string) {
         styles
     }
 }
+
+/**
+ * Normalizes a component name by removing leading dots, forward slashes, and backslashes
+ * @param name The component name to normalize
+ * @returns The normalized component name
+ */
+export function normalizeComponentName(name: string): string {
+    let normalizedName = name
+    while (normalizedName.startsWith('.'))
+        normalizedName = normalizedName.slice(1)
+
+    while (normalizedName.startsWith('/'))
+        normalizedName = normalizedName.slice(1)
+
+    while (normalizedName.startsWith('\\'))
+        normalizedName = normalizedName.slice(1)
+
+    return normalizedName
+}

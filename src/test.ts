@@ -169,10 +169,11 @@ export class Test<T> {
             let code = stack.stack.split('\n')
 
             // Show location if result fails, regardless of noLocation setting
-            const showLocation = !noLocation || !result || !!modules.length
+            const showLocation = !noLocation || !result
+            const group = showLocation || !!modules.length
 
             // Use the new options format for loc function
-            return loc(check(result, null, null, [title, `[${modules.length}]`]), { collapse: result, group: showLocation }, ({ log }) => {
+            return loc(check(result, null, null, [title, `[${modules.length}]`]), { collapse: !!result, group }, ({ log, loc }) => {
                 // Hide this log if noLocation is true and test passed
                 if (showLocation) {
                     // log(`code5 %c${this.subject} ${code}`, 'color:gray')
@@ -196,21 +197,20 @@ export class Test<T> {
 
                             // Show location for individual assertions if result fails, regardless of noLocation setting
                             const showAssertionLocation = !noLocation || !result
+                            const group = showAssertionLocation
 
                             // Check if this is an HTML mismatch and we're in interactive mode
                             const isHtmlMismatch = !result && key.startsWith('html') && interactive
 
                             // Use the new options format for loc function
-                            return loc(check(result, subject, target, [msg, ...fmt]), { collapse: !!result, group: showAssertionLocation }, async ({ log }) => {
+                            return loc(check(result, subject, target, [msg, ...fmt]), { collapse: !!result, group }, async ({ log }) => {
                                 const ar = stack.split('\n')
                                 let line = ar[4] ?? ar[3]
                                 if (line.includes('Promise'))
                                     line = ar[3]
                                 // Hide this log if noLocation is true and assertion passed
-                                if (showAssertionLocation) {
-                                    // return [[`%c${line.trim()}`, 'text-align: right']]
+                                if (showAssertionLocation)
                                     log(`%c${line.trim()}`, 'text-align: right')
-                                }
 
                                 // Handle interactive mode for HTML mismatches
                                 if (isHtmlMismatch) {

@@ -48,18 +48,97 @@ npm install @woby/chk --save-dev
 
 `@woby/chk` is designed to work with modern build tools like Vite. Here is an example of how to configure Vite to use `verifies` for your tests:
 
-```typescript
+``typescript
 // vite.config.mts
 import { defineConfig } from 'vite'
 import { snapshotPlugin } from 'vite-plugin-snapshot'
+import { testPlugin } from '@woby/vite-plugin-test'
 
 export default defineConfig({
-  plugins: [snapshotPlugin()]
+  plugins: [
+    snapshotPlugin(),
+    testPlugin()
+  ]
   /// other settings
 })
 ```
 
 To verify the snapshot server is running after configuration, visit `http://localhost:5174/@snapshot-api/version` in your browser. You should see version information if it's active.
+
+## Consumer App Setup
+
+To set up `@woby/chk` in your consumer application, you'll need to configure both the `snapshotPlugin` and `testPlugin` in your Vite configuration. Here's a detailed guide on how to set up and use these plugins for different types of testing:
+
+### Native TSX/TS Testing
+
+For native TypeScript/TSX testing, create test files with `.test.ts` or `.test.tsx` extensions. The `testPlugin` will automatically discover and serve these files.
+
+Example test file (`src/components/MyComponent.test.tsx`):
+
+```tsx
+import { expect, test } from '@woby/chk'
+import { MyComponent } from './MyComponent'
+
+test('MyComponent should render with correct message', async () => {
+  const component = <MyComponent message="Hello World" count={5} timestamp={new Date()} />
+  // Add your assertions here
+  expect(component).toBeDefined()
+})
+```
+
+### Component Story Format for TSX
+
+For component story format testing, you can create HTML files that demonstrate your components in different states. The `testPlugin` will automatically combine these files when serving the test page.
+
+Example story file (`src/components/components.test.html`):
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Component Stories</title>
+</head>
+<body>
+    <h1>MyComponent Stories</h1>
+    
+    <h2>Default State</h2>
+    <woby-chk>
+        <my-component message="Hello World" count={1} timestamp={new Date()}></my-component>
+    </woby-chk>
+    
+    <h2>With Custom Message</h2>
+    <woby-chk>
+        <my-component message="Custom Message" count={10} timestamp={new Date()}></my-component>
+    </woby-chk>
+</body>
+</html>
+```
+
+### HTML (Custom Element) Testing
+
+For testing custom elements, you can create HTML test files that directly use your custom elements. The `testPlugin` will serve these files and the `snapshotPlugin` will allow you to take snapshots of the rendered components.
+
+Example custom element test (`src/components/another-component.html`):
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Element Test</title>
+</head>
+<body>
+    <h1>AnotherComponent Test</h1>
+    <woby-chk>
+        <another-component></another-component>
+    </woby-chk>
+    
+    <h1>MyComponent2 Test</h1>
+    <woby-chk>
+        <my-component2 message="Hello Custom Element"></my-component2>
+    </woby-chk>
+</body>
+</html>
+```
 
 ## Running the Example
 

@@ -5,8 +5,6 @@
 
 import { Stack, isPromise } from "woby"
 
-
-
 // export function isAsyncGenerator<T>(input: any): input is AsyncGenerator<T> {
 //     return input &&
 //         typeof input[Symbol.asyncIterator] === 'function' &&
@@ -69,26 +67,27 @@ function isAsyncFunction(fn: unknown): fn is AsyncFunc {
  * @param msg A function that receives a console-like object (`log`, `error`, `warn`) to perform the actual logging.
  *            This function can be synchronous or asynchronous.
  */
-export function loc<T, S>(title: T | T[] | T[][], options: LocOptions | boolean, msg: (p: { log: typeof console.log, error: typeof console.error, warn: typeof console.warn }) => void) {
-    // Handle backward compatibility - if options is a boolean, treat it as the collapse parameter
-    const opts: LocOptions = typeof options === 'boolean' ? { collapse: options, group: true } : options
+export function loc<T, S>(title: T | T[] | T[][], options: LocOptions, msg: (c: { log: typeof console.log, error: typeof console.error, warn: typeof console.warn, loc: typeof loc }) => void) {
+    // Destructure the options
+    const { collapse, group } = options
 
     // If group is false, use normal log instead of grouping
-    if (opts.group === false) {
-        const logFn = console.log
-
-        logFn(...(Array.isArray(title) ? title : [title]))
-        const p = msg(console)
-        return p
+    if (!group) {
+        console.log(...(Array.isArray(title) ? title : [title]))
+        msg({ ...console, loc })
+        return
     }
 
     // Default behavior with grouping
-    const groupFn = opts.collapse ? console.groupCollapsed : console.group
+    const groupFn = collapse ? console.groupCollapsed : console.group
 
     groupFn(...(Array.isArray(title) ? title : [title]))
-    const p = msg(console)
-    console.groupEnd()
-    return p
+    try {
+        msg({ ...console, loc })
+    }
+    finally {
+        console.groupEnd()
+    }
 }
 
 /**

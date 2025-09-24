@@ -1,6 +1,8 @@
 /**
  * @file Implements the `Csf` component, which is designed to generate snapshot tests from a module of components or test functions.
  * It integrates with the `Chk` component to automatically create and manage browser-based snapshot tests for each exported component or test.
+ * 
+ * CSF stands for Component Story Format, a format for defining component examples and test cases.
  */
 
 import { Chk } from './chk'
@@ -13,6 +15,8 @@ type Module = Record<string, Component>
  * A component that generates snapshot tests from a module of components or tests.
  * Each component is expected to have default parameters if it's to be rendered without explicit props.
  * Modules using the `test()` function will be rendered in the browser debugger for interactive testing.
+ * 
+ * CSF (Component Story Format) is a format for defining component examples and test cases.
  *
  * @param props - An object containing:
  *   - `module`: An object where keys are component names and values are the component functions.
@@ -36,4 +40,5 @@ export function Csf({ module, path }: { module: Module, path?: string }): JSX.Ch
     return ret
 }
 
-customElement('csf', Csf, 'module', 'path')
+if (!customElements.get('woby-csf'))
+    customElement('woby-csf', Csf, 'module', 'path')

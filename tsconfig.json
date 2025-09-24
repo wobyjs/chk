@@ -35,7 +35,11 @@
     "jsx": "react-jsx", // <--- IMPORTANT for JSX
     "jsxImportSource": "woby", // <--- IMPORTANT for Woby
     "useDefineForClassFields": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    // "types": [
+    //   "vite/client",
+    //   "node"
+    // ]
   },
   "exclude": [
     "vite.config.mts",

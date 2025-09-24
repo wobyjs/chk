@@ -1,21 +1,21 @@
 import { defineConfig, PluginOption } from 'vite'
 import { snapshotPlugin } from 'vite-plugin-snapshot'
+import { testPlugin } from 'vite-plugin-test'
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
+import { glob } from 'glob'
 
 export default defineConfig({
     root: __dirname,
-    plugins: [snapshotPlugin() as any as PluginOption, tailwindcss() as any as PluginOption],
+    plugins: [
+        tailwindcss() as any as PluginOption,
+        snapshotPlugin() as any as PluginOption,
+        testPlugin()
+    ],
     resolve: {
         alias: {
-            // "~": path.resolve(__dirname, "./src"),
-            // 'woby/jsx-dev-runtime': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src/jsx/runtime') : 'woby',
-            // 'woby/jsx-runtime': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src/jsx/runtime') : 'woby',
-            // 'woby': process.argv.includes('dev') ? path.resolve('../../@woby/woby/src') : 'woby',
             'package.json': path.resolve(__dirname, './package.json'),
-            // Ensure local plugin resolves correctly in monorepo
             'vite-plugin-snapshot': process.argv.includes('dev') ? path.resolve(__dirname, '../../vite-plugin-snapshot/index.js') : 'vite-plugin-snapshot',
-            // Fix the alias for chk to properly resolve to the built package
             'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
         },
     },
@@ -25,22 +25,11 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: true,
 
-        // rollupOptions: {
-        //     external: ['woby', 'woby/jsx-runtime', 'oby', 'woby/jsx-runtime'],
-        //     output: {
-        //         globals: {
-        //             'woby': 'woby',
-        //             'woby/jsx-runtime': 'woby/jsx-runtime',
-        //         }
-        //     }
-        // },
-        lib: {
-            // Could also be a dictionary or array of multiple entry points
-            entry: './index.html',
-            name: 'index',
-            // the proper extensions will be added
-            fileName: 'index',
-        },
+        rollupOptions: {
+            input: {
+                main: path.resolve(__dirname, 'index.html'),
+            }
+        }
     },
 
     esbuild: {
@@ -50,6 +39,10 @@ export default defineConfig({
         port: 5174,
         watch: {
             ignored: ['**/.snapshots/**']
+        },
+        // Allow serving files from the root directory
+        fs: {
+            allow: ['..', '../../']
         }
     },
 })

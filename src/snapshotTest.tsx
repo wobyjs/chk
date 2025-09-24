@@ -170,18 +170,5 @@ export class SnapshotTest extends Test<string> {
         } catch { }
     }
 
-    // /**
-    //  * Overrides the default report method to provide snapshot-specific reporting.
-    //  * @param opts Options for the report.
-    //  */
-    // public async report(opts = { head: false }) {
-    //     // console.log(`[SnapshotTest] Reporting for '${this.snapshotName}': Result = ${this.result}`)
-    //     if (!this.result) {
-    //         console.log("Expected Props:", this.expectedSnapshot?.props)
-    //         console.log("Actual Props:", this.currentProps)
-    //         console.log("Expected Output:", this.expectedSnapshot?.output)
-    //         console.log("Actual Output:", this.currentOutput)
-    //     }
-    //     await super.report(opts)
-    // }
+
 }

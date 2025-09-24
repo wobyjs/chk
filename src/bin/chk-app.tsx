@@ -2,11 +2,9 @@
 
 import { Command } from 'commander'
 import path from "node:path"
-import { fileURLToPath } from 'node:url'
-import { dirname } from 'node:path'
 import { type Checks as ChecksType } from '../checks'
 import { Chk } from '../chk'
-import { composed } from 'happy-dom/lib/PropertySymbol.js'
+import { Window } from 'happy-dom'
 
 declare module 'happy-dom' {
     interface Window {
@@ -47,9 +45,9 @@ export default async function run() {
                 .option('-v, --verbose', 'output verbose logging')
                 .option('-i, --interactive', 'interactive mode for snapshot testing')
                 .action(async (files, options) => {
-                    // If no files specified, find and run all *.test.ts* files
+                    // If no files specified, find and run all *.test.* files including HTML
                     if (files.length === 0) {
-                        console.log("No test files specified. Finding all *.test.ts* files...")
+                        console.log("No test files specified. Finding all *.(test|spec).* files...")
                         files = await findTestFiles()
                         if (files.length === 0) {
                             console.log("No test files found.\n")
@@ -57,7 +55,8 @@ export default async function run() {
                             console.log("  chk src/example.test.ts              # Run a specific test file")
                             console.log("  chk src/*.test.ts                   # Run all .test.ts files in src directory")
                             console.log("  chk src/**/*.test.ts                # Run all .test.ts files recursively")
-                            console.log("  chk src/*nent*.test.ts*             # Run files matching pattern *nent*.test.ts*")
+                            console.log("  chk src/*nent*.test.*               # Run files matching pattern *nent*.test.*")
+                            console.log("  chk src/components.test.html        # Run a specific HTML test file")
                             console.log("\nNote: Glob patterns are expanded by your shell. In some environments,")
                             console.log("      you may need to quote patterns to prevent shell expansion.")
                             return
@@ -109,6 +108,9 @@ export default async function run() {
                                         console.error(`Failed to wrap component ${name}:`, wrapError)
                                     }
                                 }
+                            } else if (file.endsWith('.html')) {
+                                // For HTML files with custom elements, parse and process them
+                                await processHtmlFile(file)
                             } else {
                                 // For regular test files, use dynamic import
                                 const app = await import(fileUrl.href)
@@ -189,8 +191,8 @@ async function scanDirectory(dir: string, testFiles: string[]): Promise<void> {
             if (entry.isDirectory()) {
                 // Recursively scan subdirectories
                 await scanDirectory(fullPath, testFiles)
-            } else if (entry.isFile() && /\.test\.ts/.test(entry.name)) {
-                // Add test files matching the pattern *.test.ts*
+            } else if (entry.isFile() && (/\.(test|spec)\.(ts|tsx|js|jsx|html)$/.test(entry.name))) {
+                // Add test files matching the pattern *.(test|spec).ts* or *.html
                 testFiles.push(fullPath)
             }
         }
@@ -246,7 +248,7 @@ async function findFilesMatchingPattern(pattern: string): Promise<string[]> {
     const allFiles = await findAllFiles('.')
 
     // Filter files matching the pattern
-    return allFiles.filter(file => regex.test(file) && /\.test\.ts/.test(file))
+    return allFiles.filter(file => regex.test(file) && /\.(test|spec)\.(ts|tsx|js|jsx|html)$/.test(file))
 }
 
 // Find all files recursively
@@ -275,4 +277,94 @@ async function findAllFiles(dir: string): Promise<string[]> {
     }
 
     return files
+}
+
+// Helper function to process HTML files with custom elements
+async function processHtmlFile(filePath: string): Promise<void> {
+    try {
+        const fs = await import('node:fs/promises')
+        const pathModule = await import('node:path')
+
+        // First, try to import the corresponding TSX file to register custom elements
+        const tsxFilePath = filePath.replace(/\.html$/, '.tsx')
+        try {
+            // Check if the TSX file exists before trying to import it
+            try {
+                await fs.access(tsxFilePath)
+                // Convert file path to file URL for Deno compatibility
+                const fileUrl = pathToFileURL(tsxFilePath)
+                await import(fileUrl.href)
+                console.log(`Imported corresponding TSX file: ${tsxFilePath}`)
+            } catch {
+                console.log(`No corresponding TSX file found for ${filePath}`)
+            }
+        } catch (importError: any) {
+            console.warn(`Could not import corresponding TSX file ${tsxFilePath}:`, importError.message)
+        }
+
+        // Read the HTML file
+        const htmlContent = await fs.readFile(filePath, 'utf-8')
+
+        // Create a happy-dom window and set the content
+        const happyWindow = new Window({
+            url: "file://" + pathModule.resolve(filePath).replace(/\\/g, '/'),
+            settings: {
+                disableJavaScriptFileLoading: true,
+                disableCSSFileLoading: true,
+                enableFileSystemHttpRequests: true
+            }
+        })
+
+        // Set the document content directly
+        happyWindow.document.documentElement.innerHTML = htmlContent
+
+        // Find all woby-chk elements (custom element name for <chk>)
+        const chkElements = happyWindow.document.querySelectorAll('woby-chk')
+
+        for (let i = 0; i < chkElements.length; i++) {
+            const chkElement = chkElements[i]
+
+            // Get the first child element which should be our custom element
+            const customElement = chkElement.firstElementChild
+            if (!customElement) continue
+
+            // Create a unique name for this test
+            const testName = `${pathModule.basename(filePath, '.html')}/${customElement.tagName.toLowerCase()}-${i}`
+
+            try {
+                // Wait for the custom element to be defined
+                await customElements.whenDefined(customElement.tagName.toLowerCase())
+
+                // Create a container for rendering using the global document
+                const container = document.createElement('div')
+
+                // Create the HTML string representation of the custom element with its attributes
+                let elementHtml = `<${customElement.tagName.toLowerCase()}`
+                for (let j = 0; j < customElement.attributes.length; j++) {
+                    const attr = customElement.attributes[j]
+                    elementHtml += ` ${attr.name}="${attr.value}"`
+                }
+                elementHtml += `></${customElement.tagName.toLowerCase()}>`
+
+                // Set the innerHTML of the container to create the element with proper upgrade
+                container.innerHTML = elementHtml
+                const newElement = container.firstElementChild as Element
+
+                // Render the chk wrapper with the new custom element
+                const { render } = await import('woby')
+                render(
+                    <Chk name={testName}>
+                        {newElement}
+                    </Chk>,
+                    container
+                )
+
+                console.log(`[Chk Dev Mode] Registered/Updated snapshot test for '${testName}'`)
+            } catch (renderError) {
+                console.error(`Failed to render custom element ${customElement.tagName}:`, renderError)
+            }
+        }
+    } catch (error) {
+        console.error(`Failed to process HTML file ${filePath}:`, error)
+    }
 }

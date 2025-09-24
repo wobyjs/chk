@@ -1,0 +1,4 @@
+{
+  "props": {},
+  "html": "<my-component2 message=\"Hello World 2\"></my-component2>"
+}

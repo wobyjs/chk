@@ -5,6 +5,7 @@ import { expect, test, anything, createMockFromModule, req, fn, spyOn, mock } fr
 // If not, you might need to mock the module differently or adjust your build process.
 import exampleModule from './example'
 
+
 const toString = function (this: any) { return JSON.stringify(this) }
 
 test('Sample Test (sample.test.ts)', ({ }) => {

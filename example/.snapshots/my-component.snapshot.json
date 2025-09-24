@@ -1,0 +1,4 @@
+{
+  "props": {},
+  "html": "<my-component message=\"Custom message test\"></my-component>"
+}
