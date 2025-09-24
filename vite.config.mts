@@ -1,21 +1,10 @@
 import { defineConfig } from 'vite'
-// import { snapshotPlugin } from 'vite-plugin-snapshot'
 import * as path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 
 /* MAIN */
 
 const config = defineConfig({
-    // plugins: [
-    //     snapshotPlugin(), // Our custom plugin
-    // ],
-    // server: {
-    //     host: '0.0.0.0', // Allows access from network
-    // ],
-    // optimizeDeps: {
-    //     // Vite needs to know how to handle Woby's JSX transform
-    //     include: [], // Remove 'woby' from here to avoid double-loading
-    // },
     resolve: {
         alias: {
             "~": path.resolve(__dirname, "./src"),
