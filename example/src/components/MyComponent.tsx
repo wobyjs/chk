@@ -1,7 +1,7 @@
 import { customElement, DEBUGGER } from "woby"
-import 'chk/index.css'
+import '@woby/chk/index.css'
 import '../index.css'
-import 'chk'
+import '@woby/chk'
 
 DEBUGGER.debug = true
 

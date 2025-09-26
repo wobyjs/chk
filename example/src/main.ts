@@ -1,8 +1,8 @@
 import { render } from 'woby'
 import { App } from './app'
-import { Checks } from 'chk' // Import Check to run tests
+import { Checks } from '@woby/chk' // Import Check to run tests
 import './index.css'
-import 'chk/index.css'
+import '@woby/chk/index.css'
 
 // Initialize the global chk instance if it's not already
 if (!window.checks) {

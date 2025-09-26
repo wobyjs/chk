@@ -16,7 +16,7 @@ export default defineConfig({
         alias: {
             'package.json': path.resolve(__dirname, './package.json'),
             'vite-plugin-snapshot': process.argv.includes('dev') ? path.resolve(__dirname, '../../vite-plugin-snapshot/index.js') : 'vite-plugin-snapshot',
-            'chk': process.argv.includes('dev') ? path.resolve('../src') : 'chk',
+            '@woby/chk': process.argv.includes('dev') ? path.resolve('../src') : '@woby/chk',
         },
     },
 

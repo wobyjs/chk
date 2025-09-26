@@ -44,7 +44,7 @@
     },
     "dependencies": {
         "@woby/simple-router": "^1.4.12",
-        "chk": "workspace:../",
+        "@woby/chk": "workspace:../",
         "happy-dom": "^18.0.1",
         "woby": "^1.58.33"
     }

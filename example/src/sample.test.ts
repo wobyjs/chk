@@ -1,4 +1,4 @@
-import { expect, test, anything, createMockFromModule, req, fn, spyOn, mock } from 'chk'
+import { expect, test, anything, createMockFromModule, req, fn, spyOn, mock } from '@woby/chk'
 
 // Assuming example.js is a CommonJS module, you might need to adjust how it's imported
 // For simplicity, let's assume it can be imported directly or you'll handle the import mechanism.

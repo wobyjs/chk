@@ -75,8 +75,13 @@ globalThis.queueMicrotask = window.queueMicrotask.bind(window)
 globalThis.dispatchEvent = window.dispatchEvent.bind(window)
 // @ts-ignore
 globalThis.fetch = window.fetch.bind(window)
+// @ts-ignore
+globalThis.MutationObserver = window.MutationObserver
+// @ts-ignore
+globalThis.ResizeObserver = window.ResizeObserver
 
 console.log("Happy-dom environment setup complete")
+console.log("Window available:", typeof window !== 'undefined')
 console.log("Document available:", typeof document !== 'undefined')
 
 // Export a function to dynamically import and run the main application

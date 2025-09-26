@@ -8,12 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@woby/chk':
+        specifier: workspace:../
+        version: link:..
       '@woby/simple-router':
         specifier: ^1.4.12
         version: 1.4.12(woby@1.58.33)
-      chk:
-        specifier: workspace:../
-        version: link:..
       happy-dom:
         specifier: ^18.0.1
         version: 18.0.1

@@ -1,3 +1,8 @@
+## [0.1.5] - 2025-09-24
+
+### 🚀 Features
+
+- *(snapshot)* Introduce interactive snapshot update mode
 ## [0.1.4] - 2025-09-24
 
 ### 🚀 Features

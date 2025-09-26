@@ -43,11 +43,11 @@ function getPropertyDescriptor(obj: object, key: PropertyKey) {
  * or if trying to spy on a getter/setter that doesn't exist.
  */
 // Spy on getter
-export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K, accessType: 'get'): MockedFunction<() => T[K]>;
+export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K, accessType: 'get'): MockedFunction<() => T[K]>
 // Spy on setter
-export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K, accessType: 'set'): MockedFunction<(v: T[K]) => void>;
+export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K, accessType: 'set'): MockedFunction<(v: T[K]) => void>
 // Spy on method
-export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K): MockedFunction<T[K] extends (...args: any[]) => any ? T[K] : never>;
+export function spyOn<T extends object, K extends keyof T>(obj: T, methodName: K): MockedFunction<T[K] extends (...args: any[]) => any ? T[K] : never>
 // Implementation
 export function spyOn<T extends object, K extends keyof T>(
   obj: T,
@@ -115,12 +115,12 @@ export function spyOn<T extends object, K extends keyof T>(
   // Override mockRestore to restore the original method
   const originalMockRestore = mockedFn.mockRestore
   mockedFn.mockRestore = () => {
-    obj[methodName] = originalMethod
+    obj[methodName] = originalMethod.bind(obj)
     originalMockRestore()
   };
 
   // Replace the original method with the mocked function
-  (obj as any)[methodName] = mockedFn
+  (obj as any)[methodName] = mockedFn.bind(obj)
 
   return mockedFn
 }

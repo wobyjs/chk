@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>chk Example Test Runner</title>
     <!-- <link href="./dist/index.css" rel="stylesheet"> -->
-    <link href="./node_modules/chk/dist/index.css" rel="stylesheet">
+    <link href="./node_modules/@woby/chk/dist/index.css" rel="stylesheet">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
     <!-- Enabled for debugging -->
     <!-- <script type="module" src="./src/test.tsx"></script> -->
     <script type="module">
-        import { runTests, renderTestComponents } from './node_modules/chk'
+        import { runTests, renderTestComponents } from './node_modules/@woby/chk'
         import * as tests from './index.test'
         renderTestComponents(tests)
         runTests()
