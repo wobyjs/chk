@@ -1,4 +1,0 @@
-{
-  "props": {},
-  "html": "<div class=\"my-component p-4 border rounded-lg shadow-md bg-white\"><h1 class=\"text-2xl font-bold text-gray-800 mb-2\">My Component</h1><p class=\"text-gray-600 mb-1\">Message: <span class=\"font-medium\"></span></p><p class=\"text-gray-600 mb-1\">Count: <span class=\"font-medium\"></span></p><p class=\"text-gray-600\">Timestamp: <span class=\"font-medium\">Tue Sep 23 2025 14:10:30 GMT+0800 (Singapore Standard Time)</span></p></div>"
-}

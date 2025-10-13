@@ -5,12 +5,14 @@
 
 export * from './checks'
 export * from './expect'
-export * from './index'
+// Remove the circular import
+// export * from './index'
 export * from './match'
 export * from './messenger'
 export * from './utils'
 export * from './utils/snapshotUtils'
-export * from './checks'
+// Remove duplicate export
+// export * from './checks'
 export * from './chk' // Export the Chk component
 export * from './snapshotTest' // Export SnapshotTest if it needs to be accessible
 export * from './csf'

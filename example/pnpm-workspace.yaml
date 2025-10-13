@@ -1,0 +1,2 @@
+overrides:
+  '@woby/vite-plugin-test': link:C:/Users/wongc/AppData/Local/pnpm/global/5/node_modules/@woby/vite-plugin-test

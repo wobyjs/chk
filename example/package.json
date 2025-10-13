@@ -14,6 +14,9 @@
         "preview": "vite preview",
         "watch": "concurrently \"vite build --watch\" \"tsc --watch\" ",
         "dev": "vite  --force --mode dev --host",
+        "chk:watch": "chk-watch",
+        "dual:watch": "run-p dev chk:watch",
+        "dual": "run-p dev chk",
         "comment": "while debugging, pnpm link -g in ../ before running following command",
         "debug:sample": "chk-debug  src/sample.test.ts",
         "debug:components": "chk-debug src/components.test.tsx",
@@ -23,9 +26,9 @@
         "watch:console": "chk-watch",
         "debug:console": "chk-debug",
         "test:sample": "chk src/sample.test.ts",
-        "test:console:app": "chk src/components.test.tsx",
-        "test:watch": "chk-watch src/app.test.tsx",
-        "test:html": "chk src/components.test.html",
+        "test:console:app": "chk src/components/components.test.tsx",
+        "//test:watch": "chk-watch src/app.test.tsx",
+        "test:html": "chk src/components/components.test.html",
         "chk": "chk",
         "chk:i": "chk -i"
     },
@@ -34,17 +37,17 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.11",
         "@vitejs/plugin-react": "^5.0.3",
+        "@woby/vite-plugin-test": "link:..\\..\\vite-plugin-test",
         "glob": "^11.0.3",
         "tailwindcss": "^4.1.11",
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
         "vite-plugin-clean": "^1.0.0",
-        "vite-plugin-snapshot": "workspace:../../../vite-plugin-snapshot",
-        "vite-plugin-test": "workspace:../../vite-plugin-test"
+        "vite-plugin-snapshot": "workspace:../../../vite-plugin-snapshot"
     },
     "dependencies": {
+        "@woby/chk": "link:..",
         "@woby/simple-router": "^1.4.12",
-        "@woby/chk": "workspace:../",
         "happy-dom": "^18.0.1",
         "woby": "^1.58.33"
     }

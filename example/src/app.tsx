@@ -23,7 +23,7 @@ export function App() {
     console.log('APP')
     return (
         <div>
-            Real page, no test
+            Real page, click <a href="/test"><span class='text-[red]'>here</span></a> to load the test
             <MyComponent class="border m-10" message="World" count={1} timestamp={now} />
             <MyComponent class="border m-10" message="Woby" count={2} timestamp={new Date(new Date(2025, 0, 2, 0, 0, 0, 0))} />
 
