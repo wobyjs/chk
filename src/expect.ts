@@ -3,7 +3,7 @@
  * An `Expect` instance wraps a subject value and provides a fluent interface for applying various matchers (assertions).
  */
 
-import { PromiseMaybe } from "soby"
+import { PromiseMaybe } from "woby"
 import { Test } from "./test"
 
 /**

@@ -95,11 +95,11 @@ export async function loadSnapshot(id: string): Promise<{ props: string, html: s
                 const json = JSON.parse(text)
                 return json
             } catch (e) {
-                console.error(`%c${(e as Error).message}`, 'color: red; font-weight: bold;')
+                console.error(`%cJSON ERROR, ${(e as Error).message}`, 'color: red; font-weight: bold;')
                 return undefined
             }
         } catch (e) {
-            console.error(`%c${(e as Error).message}`, 'color: red; font-weight: bold;')
+            console.error(`%cError loading ${id}: ${(e as Error).message}`, 'color: red; font-weight: bold;')
             return undefined
         }
     } else {
@@ -121,7 +121,7 @@ export async function loadSnapshot(id: string): Promise<{ props: string, html: s
             }
             return undefined
         } catch (e) {
-            console.error(`%c${(e as Error).message}`, 'color: red; font-weight: bold;')
+            console.error(`%cError getting snapshot ${id}: ${(e as Error).message}`, 'color: red; font-weight: bold;')
             return undefined
         }
     }

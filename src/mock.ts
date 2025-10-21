@@ -3,7 +3,8 @@
  * This enables isolating units of code for testing by controlling their dependencies.
  */
 
-import * as SS from "soby"
+import * as SS from "woby"
+import { context } from 'woby'
 import { TESTCONTEXT_SYMBOL } from "./testContext"
 import { TextContext } from "./types"
 

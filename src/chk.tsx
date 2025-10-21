@@ -7,7 +7,7 @@
 // Add vite/client types for import.meta.env
 /// <reference types="vite/client"/>
 
-import { type JSX, render, SYMBOL_STACK, StackTaggedFunction, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement, ObservableMaybe, isObservable } from 'woby'
+import { type JSX, render, mark, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement, ObservableMaybe, isObservable, defaults, useTimeout, Observable } from 'woby'
 import { serializeProps, serializeOutput, normalizeComponentName } from './utils'
 import { SnapshotTest } from './snapshotTest' // Import SnapshotTest
 
@@ -63,6 +63,69 @@ interface ChkProps {
     [key: string]: any
 }
 
+function getFullHTML(node: Node): string {
+    if (node instanceof HTMLSlotElement) {
+        // Handle slot elements specifically
+        let html = `<slot-mocked`
+
+        // Add attributes
+        for (const attr of node.attributes) {
+            html += ` ${attr.name}="${attr.value}"`
+        }
+        html += '>'
+
+        // Handle assigned nodes if any
+        const assignedNodes = node.assignedNodes()
+        for (const assignedNode of assignedNodes) {
+            html += getFullHTML(assignedNode)
+        }
+
+        html += '</slot-mocked>'
+        return html
+    } else if (node instanceof ShadowRoot) {
+        // Handle shadow root directly
+        let html = '<shadowRoot-mocked>'
+        for (const child of node.childNodes) {
+            html += getFullHTML(child)
+        }
+        html += '</shadowRoot-mocked>'
+        return html
+    } else if (node instanceof Text) {
+        return node.textContent || ''
+    } else if (node instanceof Comment) {
+        return `<!--${node.textContent}-->`
+    } else if (node instanceof Element) {
+        const n = node.tagName.toLowerCase()
+        const isCE = customElements.get(n)
+        const name = !!isCE ? n + '-mocked' : n
+        let html = `<${name}`
+
+        // Add attributes
+        for (const attr of node.attributes) {
+            html += ` ${attr.name}="${attr.value}"`
+        }
+        html += '>'
+
+        // Handle shadow DOM
+        if (node.shadowRoot) {
+            // html += '<!-- shadowRoot -->'
+            for (const child of node.shadowRoot.childNodes) {
+                html += getFullHTML(child)
+            }
+            // html += '<!-- /shadowRoot -->'
+        }
+
+        // Handle light DOM children
+        for (const child of node.childNodes) {
+            html += getFullHTML(child)
+        }
+
+        html += `</${name}>`
+        return html
+    }
+    return ''
+}
+
 /**
  * The `Chk` component provides snapshot testing capabilities in a development environment.
  * It renders its children, captures their HTML output, and compares it against a stored snapshot.
@@ -72,28 +135,41 @@ interface ChkProps {
  * @param props The properties for the `Chk` component, including the snapshot name and the children to be tested.
  * @returns The rendered children, wrapped with snapshot testing UI in development mode.
  */
-export function Chk(props: ChkProps) {
-    const { name, children, ...componentProps } = props
+export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | undefined, children: $<JSX.Child>() as JSX.Child | undefined }), (props) => {
+    const { name: pname, children, ...componentProps } = props
+    const name = isObservable(pname) ? pname : $($$(pname))
+
     const isDev = typeof import.meta.env !== 'undefined' && import.meta.env.DEV
     const rejected = $(false)
 
     // Trim children to remove empty text nodes
-    const trimmedChildren = trimChildren(children)
+    const trimmedChildren = trimChildren($$(children))
 
-    if (!!trimmedChildren && !(trimmedChildren as any as StackTaggedFunction)[SYMBOL_STACK])
-        console.error('Debug/test info not available, please set woby.DEBUGGER.test = true')
+    // Since SYMBOL_STACK and StackTaggedFunction are not exported, we'll skip this check
+    // if (!!trimmedChildren && !(trimmedChildren as any as StackTaggedFunction)[SYMBOL_STACK])
+    //     console.error('Debug/test info not available, please set woby.DEBUGGER.test = true')
 
     // const comp = extractNamedComponent((children as StackTaggedFunction)[SYMBOL_STACK]?.stack?.split('\n')[4])
     // const compName = comp ? comp + '/' + name : name
 
-    if (trimmedChildren.length === 1 && !$$(name))
+    if (trimmedChildren.length === 1 && !$$(name)) {
         if (isObservable(name))
-            name(trimmedChildren[0].nodeName.toLowerCase())
+            name(normalizeComponentName(trimmedChildren[0].nodeName.toLowerCase()))
+    }
+    else if (trimmedChildren instanceof HTMLSlotElement) {
+        trimmedChildren.onslotchange = () => {
+            const n = trimmedChildren.assignedElements().map(e =>
+                e.tagName.toLowerCase() + `{${[...e.attributes].map(a => `${a.name}=${a.value}`).join(',')}}`
+            ).join(' ')
+            // console.log('getFullHTML', getFullHTML(trimmedChildren))
+            name(normalizeComponentName(n))
+        }
+    }
 
-    const compName = normalizeComponentName($$(name) ?? trimmedChildren[0].nodeName.toLowerCase())
 
     // if (isDev) {
     const renderedOutput = $<string>('') // Create a reactive observable for renderedOutput
+    // const renderedShadowRoot = $<string>('') // Create a reactive observable for renderedShadowRoot
 
     try {
         // Render the children to a detached DOM element to capture its output
@@ -107,7 +183,9 @@ export function Chk(props: ChkProps) {
                         mutation.addedNodes.forEach((node) => {
                             // Update renderedOutput when nodes are added
                             if (node instanceof Element) {
-                                renderedOutput(serializeOutput(node.outerHTML))
+                                useTimeout(() => {
+                                    renderedOutput(serializeOutput(getFullHTML(node)))
+                                }, 100)
                             }
                             // You can add specific logic here to handle added nodes
                         })
@@ -127,25 +205,41 @@ export function Chk(props: ChkProps) {
         }
         else {
             render(trimmedChildren, container)
-            renderedOutput(serializeOutput(container.innerHTML))
+            useTimeout(() => {
+                renderedOutput(serializeOutput(getFullHTML(container)))
+            }, 100)
+
+            // Check if container has child nodes with shadow roots
+            // const childElements = container.querySelectorAll('*')
+            // for (let i = 0; i < childElements.length; i++) {
+            //     const element = childElements[i]
+            //     if (element.shadowRoot) {
+            //         renderedShadowRoot(serializeOutput(getFullHTML(element.shadowRoot)))
+            //         break // Capture the first shadow root found
+            //     }
+            // }
         }
     } catch (e: any) {
-        console.error(`[Chk] Error rendering component '${compName}' for snapshot:`, e)
+        console.error(`[Chk] Error rendering component '${name}' for snapshot:`, e)
         renderedOutput(`ERROR: ${e.message}`)
+        // renderedShadowRoot(`ERROR: ${e.message}`)
     }
 
     const serializedComponentProps = serializeProps(componentProps)
 
     const snapshot = useMemo(() => {
         // Create a new SnapshotTest instance
-        const sp = new SnapshotTest(compName, serializedComponentProps, $$(renderedOutput), (trimmedChildren as any as StackTaggedFunction)[SYMBOL_STACK])
+        // Since we can't import SYMBOL_STACK and StackTaggedFunction, we'll pass null for the stack
+        if (!$$(name) || $$(name) === '' || $$(renderedOutput) === '') return
+        // const sp = new SnapshotTest($$(name), serializedComponentProps, $$(renderedOutput), $$(renderedShadowRoot), null)
+        const sp = new SnapshotTest($$(name), serializedComponentProps, $$(renderedOutput), null)
 
         // Add the SnapshotTest instance to window.checks.modules
         // This assumes window.checks is initialized and accessible.
         // In a real application, you might have a more controlled way to register tests.
         if (window.checks) {
             // Check if a test with this name already exists to avoid duplicates
-            const existingTestIndex = window.checks.modules.findIndex(m => m.title === name && m instanceof SnapshotTest)
+            const existingTestIndex = window.checks.modules.findIndex(m => m.title === $$(name) && m instanceof SnapshotTest)
             if (existingTestIndex !== -1) {
                 // If it exists, replace it with the new instance (for re-renders)
                 window.checks.modules[existingTestIndex] = sp
@@ -175,10 +269,10 @@ export function Chk(props: ChkProps) {
             $$(ref).replaceChildren(s as any)
     })
 
-    const result = useMemo(() => $$($$(snapshot).tested) && $$(snapshot).result)
+    const result = useMemo(() => $$($$(snapshot)?.tested) && $$(snapshot)?.result)
 
     const buttons = useMemo(() => {
-        return ($$($$(snapshot).tested) && !$$(result) && !$$(rejected)) ?
+        return ($$($$(snapshot)?.tested) && !$$(result) && !$$(rejected)) ?
             <div class="flex space-x-1">
                 <button class="px-2 py-0.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer" onClick={() => $$(snapshot).save()}>Accept</button>
                 <button class="px-2 py-0.5 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer" onClick={() => rejected(true)}>Reject</button>
@@ -214,11 +308,11 @@ export function Chk(props: ChkProps) {
     //     // In production, just render the children directly 
     //     return children
     // }
-}
+})
 
+// Fix the customElement registration by making the component compatible
 if (!customElements.get('woby-chk'))
-    customElement('woby-chk', Chk, 'name')
-
+    customElement('woby-chk', Chk)
 
 if (!customElements.get('woby-test'))
-    customElement('woby-test', Chk, 'name')
+    customElement('woby-test', Chk)

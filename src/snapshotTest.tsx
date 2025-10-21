@@ -19,6 +19,8 @@ interface SnapshotContent {
     props: any
     /** The HTML output of the component at the time the snapshot was taken. */
     output: string
+    /** The shadowRoot content of the component at the time the snapshot was taken. */
+    shadowRoot?: string
     // Add any other metadata if needed, e.g., timestamp, version
 }
 
@@ -63,6 +65,7 @@ export class SnapshotTest extends Test<string> {
             this.expectedSnapshot = {
                 props: loadedSnapshot.props,
                 output: unquote(loadedSnapshot.html),
+                // shadowRoot: loadedSnapshot.shadowRoot ? unquote(loadedSnapshot.shadowRoot) : undefined
             }
         }
 
@@ -85,11 +88,25 @@ export class SnapshotTest extends Test<string> {
         const propsMatch = areDeeplyEqual(this.currentProps, this.expectedSnapshot.props)
         // Compare current output with snapshot output
         const outputMatch = areDeeplyEqual(this.currentOutput, this.expectedSnapshot.output)
+        // Compare current shadowRoot with snapshot shadowRoot (if both exist)
+        // const shadowRootMatch = this.currentShadowRoot && this.expectedSnapshot.shadowRoot
+        //     ? areDeeplyEqual(this.currentShadowRoot, this.expectedSnapshot.shadowRoot)
+        //     : true // If either is missing, consider it a match
 
+        // const overallMatch = propsMatch && outputMatch && shadowRootMatch
         const overallMatch = propsMatch && outputMatch
 
         if (!overallMatch) {
-            snapshotExpect.process('html mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
+            // Check which specific part failed
+            if (!outputMatch) {
+                snapshotExpect.process('html mismatch\n', false, this.currentOutput, this.expectedSnapshot.output)
+            }
+            // else if (!shadowRootMatch) {
+            //     snapshotExpect.process('shadowRoot mismatch\n', false, this.currentShadowRoot, this.expectedSnapshot.shadowRoot || '')
+            // } 
+            else {
+                snapshotExpect.process('props mismatch\n', false, JSON.stringify(this.currentProps), JSON.stringify(this.expectedSnapshot.props))
+            }
             // console.log(`%c[SnapshotTest] Snapshot mismatch for '${this.snapshotName}'!`, 'color: red; font-weight: bold;')
 
             // Handle interactive mode for snapshot mismatches
@@ -98,7 +115,12 @@ export class SnapshotTest extends Test<string> {
                 console.log(`%cSnapshot mismatch detected for '${this.snapshotName}'`, 'color:orange')
 
                 // Show a simple character-level diff
-                this.showDiff(this.showHtml(this.currentOutput), this.showHtml(this.expectedSnapshot.output))
+                if (!outputMatch) {
+                    this.showDiff(this.showHtml(this.currentOutput), this.showHtml(this.expectedSnapshot.output))
+                }
+                // else if (!shadowRootMatch && this.expectedSnapshot.shadowRoot) {
+                //     this.showDiff(this.showHtml(this.currentShadowRoot), this.showHtml(this.expectedSnapshot.shadowRoot))
+                // }
 
                 console.log('%cCurrent output differs from saved snapshot.', 'color:orange')
 
@@ -165,6 +187,7 @@ export class SnapshotTest extends Test<string> {
      */
     async save() {
         try {
+            // await saveSnapshot(this.snapshotName, this.currentProps, this.currentOutput, this.currentShadowRoot)
             await saveSnapshot(this.snapshotName, this.currentProps, this.currentOutput)
             await this.test()
         } catch { }

@@ -256,6 +256,8 @@ export function showDiff(current: string, expected: string) {
  * @returns The normalized component name
  */
 export function normalizeComponentName(name: string): string {
+    if (!name) return name
+
     let normalizedName = name
     while (normalizedName.startsWith('.'))
         normalizedName = normalizedName.slice(1)

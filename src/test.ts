@@ -9,7 +9,7 @@ import { Expect } from "./expect"
 import { binary } from "./messenger/console/binary"
 import { check } from './messenger/console/check'
 import { TesterType, TestOptions, ReportJson, TestFactory } from "./types"
-import * as SS from "soby"
+import * as SS from "woby"
 import { TESTCONTEXT_SYMBOL } from "./testContext"
 import { binds } from "./bind"
 import { imp, req } from "./mock"

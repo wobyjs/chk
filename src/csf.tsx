@@ -5,8 +5,9 @@
  * CSF stands for Component Story Format, a format for defining component examples and test cases.
  */
 
+import { ObservableMaybe } from 'woby'
 import { Chk } from './chk'
-import { customElement, JSX, Stack } from 'woby'
+import { $, $$, customElement, JSX, Stack, defaults, type Observable } from 'woby'
 
 type Component = (props: any) => JSX.Element
 type Module = Record<string, Component>
@@ -23,14 +24,18 @@ type Module = Record<string, Component>
  *   - `path`: An optional string to prepend to the snapshot name, useful for organizing tests.
  * @returns An array of `JSX.Child` elements, each representing a `Chk` component wrapping a component from the module.
  */
-export function Csf({ module, path }: { module: Module, path?: string }): JSX.Child[] {
+export const Csf = defaults(() => ({
+    module: $<Module>() as ObservableMaybe<Module> | undefined,
+    path: $<string>() as ObservableMaybe<string> | undefined,
+    children: $() as ObservableMaybe<JSX.Child> | undefined
+}), ({ module, path }): JSX.Child[] => {
     const ret = []
     const s = new Stack('')
-    for (const componentName in module) {
-        if (Object.prototype.hasOwnProperty.call(module, componentName)) {
-            const Component = module[componentName]
+    for (const componentName in $$(module)) {
+        if (Object.prototype.hasOwnProperty.call($$(module), componentName)) {
+            const Component = $$(module)[componentName]
             if (typeof Component === 'function') {
-                ret.push(() => <Chk name={(path ? path + '/' : '') + Component.name}>
+                ret.push(() => <Chk name={($$(path) ? $$(path) + '/' : '') + Component.name}>
                     <Component />
                 </Chk>)
             }
@@ -38,7 +43,8 @@ export function Csf({ module, path }: { module: Module, path?: string }): JSX.Ch
     }
 
     return ret
-}
+})
+
 
 if (!customElements.get('woby-csf'))
-    customElement('woby-csf', Csf, 'module', 'path')
+    customElement('woby-csf', Csf)

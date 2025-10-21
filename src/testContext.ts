@@ -5,7 +5,7 @@
  */
 
 import { ExpectType, TesterType, TestFactory, TestOptions, TextContext } from "./types"
-import * as SS from "soby"
+import * as SS from "woby"
 import { test as Test } from './test'
 import { binds } from "./bind"
 import type * as ext from './expect.static'
