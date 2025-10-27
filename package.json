@@ -1,6 +1,6 @@
 {
     "name": "@woby/chk",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "description": "In browser testing framework",
     "publishConfig": {
         "access": "public"
