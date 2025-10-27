@@ -1,0 +1,4 @@
+{
+  "props": {},
+  "html": "<slot-mocked> <another-component-mocked></another-component-mocked> </slot-mocked>"
+}

@@ -1,0 +1,4 @@
+{
+  "props": {},
+  "html": "<slot-mocked> <my-component2-mocked message=\"Hello World 2\"></my-component2-mocked> </slot-mocked>"
+}

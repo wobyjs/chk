@@ -4,10 +4,12 @@
     "description": "In browser testing framework",
     "main": "./dist/index.js",
     "scripts": {
-        "git": "git-cliff > CHANGELOG.md && git-commit-m",
+        "git": " git-changelog -a -o CHANGELOG.md && git-commit-m",
         "bump": "pnpm version patch",
-        "npmjs": "pnpm publish",
-        "release": "run-s -c git bump npmjs",
+        "push": "git push && git push --tags",
+        "npmjs": "pnpm publish --access public",
+        "commit": "pnpm git && pnpm bump && pnpm push",
+        "release": "run-s -c commit npmjs",
         "preinstall": "npx only-allow pnpm",
         "declaration": "tsc --declaration --emitDeclarationOnly --outDir dist/types --declarationDir dist/types",
         "build": "vite build",
@@ -37,7 +39,7 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.11",
         "@vitejs/plugin-react": "^5.0.3",
-        "@woby/vite-plugin-test": "link:..\\..\\vite-plugin-test",
+        "@woby/vite-plugin-test": "workspace:../../vite-plugin-test",
         "glob": "^11.0.3",
         "tailwindcss": "^4.1.11",
         "typescript": "^5.8.3",
@@ -46,9 +48,9 @@
         "vite-plugin-snapshot": "workspace:../../../vite-plugin-snapshot"
     },
     "dependencies": {
-        "@woby/chk": "link:..",
+        "@woby/chk": "workspace:..",
         "@woby/simple-router": "^1.4.12",
         "happy-dom": "^18.0.1",
-        "woby": "^1.58.33"
+        "woby": "workspace:../../woby"
     }
 }

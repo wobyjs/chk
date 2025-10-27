@@ -1,12 +1,17 @@
-import { customElement, DEBUGGER } from "woby"
+import { $, customElement, DEBUGGER, defaults } from "woby"
 import '@woby/chk/index.css'
 import '../index.css'
 import '@woby/chk'
+import { ObservableMaybe } from "../../../../woby/dist/types"
 
 DEBUGGER.debug = true
 
 // Example component test file
-export const MyComponent = ({ message, count, timestamp = new Date(), class: cls }: {
+export const MyComponent = defaults(() => ({
+    timestamp: new Date(),
+    message: $('') as ObservableMaybe<string> | undefined,
+    count: $(0), class: $('')
+}), ({ message, count, timestamp, class: cls }: {
     message: string
     count: number
     timestamp: Date
@@ -20,6 +25,6 @@ export const MyComponent = ({ message, count, timestamp = new Date(), class: cls
             <p class="text-gray-600">Timestamp: <span class="font-medium">{timestamp.toString()}</span></p>
         </div>
     )
-}
+})
 
-customElement('my-component', MyComponent, 'message')
+customElement('my-component', MyComponent)
