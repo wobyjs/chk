@@ -3,10 +3,7 @@
     "version": "0.1.12",
     "description": "In browser testing framework",
     "publishConfig": {
-        "access": "public",
-        "dependencies": {
-            "woby": "latest"
-        }
+        "access": "public"
     },
     "bin": {
         "chk": "./chk.CMD",
@@ -57,7 +54,7 @@
         "vite": "^6.3.5"
     },
     "peerDependencies": {
-        "woby": "workspace:../woby"
+        "woby": "^1.58.39"
     },
     "dependencies": {
         "ansis": "^4.1.0",
