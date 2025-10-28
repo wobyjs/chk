@@ -158,9 +158,29 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
     }
     else if (trimmedChildren instanceof HTMLSlotElement) {
         trimmedChildren.onslotchange = () => {
-            const n = trimmedChildren.assignedElements().map(e =>
-                e.tagName.toLowerCase() + `{${[...e.attributes].map(a => `${a.name}=${a.value}`).join(',')}}`
-            ).join(' ')
+            const elements = trimmedChildren.assignedElements()
+            
+            // Check if any element has a 'name' attribute
+            const hasNameAttr = elements.some(e => e.hasAttribute('name'))
+            
+            if (hasNameAttr) {
+                // Use the name attribute if it exists
+                const nameAttr = elements.find(e => e.hasAttribute('name'))?.getAttribute('name')
+                if (nameAttr) {
+                    name(normalizeComponentName(nameAttr))
+                    return
+                }
+            }
+            
+            // Otherwise, use the default pattern (tag name + stable attributes)
+            const n = elements.map(e => {
+                // Filter out dynamic attributes that shouldn't be part of the snapshot name
+                const stableAttrs = [...e.attributes].filter(a => 
+                    !['style', 'class', 'id', 'name'].includes(a.name) && !a.name.startsWith('on')
+                )
+                const attrString = stableAttrs.map(a => `${a.name}=${a.value}`).join(',')
+                return e.tagName.toLowerCase() + (attrString ? `{${attrString}}` : '')
+            }).join(' ')
             // console.log('getFullHTML', getFullHTML(trimmedChildren))
             name(normalizeComponentName(n))
         }
@@ -282,7 +302,8 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
 
     // The actual UI for accept/reject will be handled by the messenger/browser components
     // and triggered by the snapshotTest.ts module.
-    return <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4">
+    // return <div class="grid grid-cols-2 gap-6 p-4">
+    return <div class="grid grid-cols-2 gap-6 p-4">
         <div class="relative border rounded-md pt-6 pb-4 px-4 bg-white shadow-sm">
             <div class="absolute -top-3 left-4 right-4 flex justify-between items-center">
                 <span class={["bg-white px-2 text-sm font-semibold ", () => $$(result) ? "text-green-800" : "text-red-800"]}><b>{name}</b></span>
