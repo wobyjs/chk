@@ -3,7 +3,10 @@
     "version": "0.1.9",
     "description": "In browser testing framework",
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "dependencies": {
+            "woby": "latest"
+        }
     },
     "bin": {
         "chk": "./chk.CMD",
