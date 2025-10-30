@@ -22,7 +22,7 @@ Whether you're building a simple library or a complex application, `@woby/chk` p
 
 `@woby/chk` integrates directly with your browser's developer tools, allowing for interactive debugging of your tests. When a test fails or you set a breakpoint, you can inspect variables, step through your code, and utilize the full power of the browser's debugger. This is complemented by real-time code highlighting, making it easy to pinpoint the exact line of code being executed.
 
-![Debugging Code Highlight](./doc/debugging%20code%20highlight.png)
+![Debugging Code Highlight](https://wobyjs.github.io/chk/doc/debugging%20code%20highlight.png)
 
 ### In-Browser Test Case Navigation
 
@@ -32,7 +32,7 @@ Unlike many other test frameworks that primarily run in a command-line interface
 
 `@woby/chk` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `@woby/chk` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools. The generated snapshot files are stored in the `example/.snapshots/` directory within the project.
 
-![DOM Snapshot](./doc/dom%20snapshot.png)
+![DOM Snapshot](https://wobyjs.github.io/chk/doc/dom%20snapshot.png)
 
 
 
@@ -187,8 +187,8 @@ test('should sum two numbers', () => {
 
 ## API Documentation
 
-*   [Expect API](./doc/expect.md)
-*   [Mock API](./doc/mock.md)
-*   [Test API](./doc/test.md)
-*   [Fn API](./doc/fn.md)
-*   [SpyOn API](./doc/spyOn.md)
+*   [Expect API](https://github.com/wobyjs/chk/blob/main/doc/expect.md)
+*   [Mock API](https://github.com/wobyjs/chk/blob/main/doc/mock.md)
+*   [Test API](https://github.com/wobyjs/chk/blob/main/doc/test.md)
+*   [Fn API](https://github.com/wobyjs/chk/blob/main/doc/fn.md)
+*   [SpyOn API](https://github.com/wobyjs/chk/blob/main/doc/spyOn.md)
