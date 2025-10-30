@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveLength` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveLength` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that an object (e.g., array, string) has a specific `length` property.
  */
 

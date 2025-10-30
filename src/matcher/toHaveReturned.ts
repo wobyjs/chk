@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveReturned` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveReturned` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a mock function has returned a value at least once.
  */
 

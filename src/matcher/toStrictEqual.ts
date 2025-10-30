@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toStrictEqual` matcher for the `verifies` testing framework.
+ * @file Implements the `toStrictEqual` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that two values are deeply and strictly equal, including their types and object structures.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveProperty` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveProperty` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that an object has a specific property, optionally with a specific value.
  */
 

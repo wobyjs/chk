@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeInstanceOf` matcher for the `verifies` testing framework.
+ * @file Implements the `toBeInstanceOf` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a value is an instance of a specific class.
  */
 

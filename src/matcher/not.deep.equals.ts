@@ -1,5 +1,5 @@
 /**
- * @file Implements the `not.deep.equals` (`!==`, `ndeq`) matchers for the `verifies` testing framework.
+ * @file Implements the `not.deep.equals` (`!==`, `ndeq`) matchers for the `@woby/chk` testing framework.
  * These matchers assert that the subject is not strictly equal to the target value.
  */
 

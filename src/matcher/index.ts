@@ -2,7 +2,7 @@
  * @file This file serves as the main entry point for the `matcher` directory,
  * re-exporting all individual matcher implementations.
  * These matchers extend the `Expect` prototype, providing a rich set of assertion capabilities
- * for the `verifies` testing framework.
+ * for the `@woby/chk` testing framework.
  */
 
 export * from './not'
@@ -15,6 +15,7 @@ export * from './array.contains'
 export * from './resolves'
 export * from './rejects'
 export * from './toThrow'
+export * from './toThrowErrorContains'
 export * from './toHaveBeenCalled'
 export * from './toHaveBeenCalledTimes'
 export * from './toHaveBeenCalledWith'

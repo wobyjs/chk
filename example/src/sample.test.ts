@@ -586,6 +586,23 @@ test('Sample Test (sample.test.ts)', ({ }) => {
     })
 
 
+    test('toThrowErrorContains matcher', () => {
+        // Test with a function that throws an error containing specific text
+        const fnWithError = () => {
+            throw new Error('This is a specific error message for testing')
+        }
+
+        expect(fnWithError).toThrowErrorContains('specific error')
+        expect(fnWithError).toThrowErrorContains('testing')
+        expect(fnWithError).not.toThrowErrorContains('nonexistent')
+
+        // Test with a function that doesn't throw
+        const fnWithoutError = () => {
+            return 'no error here'
+        }
+
+        expect(fnWithoutError).not.toThrowErrorContains('anything')
+    })
 
     test('plays video', () => {
 

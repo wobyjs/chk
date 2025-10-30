@@ -1,5 +1,5 @@
 {
-    "name": "verifies-example",
+    "name": "c-example",
     "version": "1.0.0",
     "description": "In browser testing framework",
     "main": "./dist/index.js",

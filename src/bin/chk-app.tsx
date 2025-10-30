@@ -2,6 +2,7 @@
 
 import { Command } from 'commander'
 import path from "node:path"
+import fg from 'fast-glob'
 import { type Checks as ChecksType } from '../checks'
 import { Chk } from '../chk'
 import { Window } from 'happy-dom'
@@ -201,18 +202,21 @@ async function scanDirectory(dir: string, testFiles: string[]): Promise<void> {
     }
 }
 
-// Function to expand glob patterns
+// Function to expand glob patterns using fast-glob
 async function expandGlobPatterns(patterns: string[]): Promise<string[]> {
     const fs = await import('node:fs/promises')
-    const path = await import('node:path')
 
     const expandedFiles: string[] = []
 
     for (const pattern of patterns) {
+        // Normalize backslashes to forward slashes for glob patterns
+        // fast-glob expects forward slashes even on Windows
+        const normalizedPattern = pattern.replace(/\\/g, '/')
+
         // If it's a simple file path (no glob patterns), add it directly
-        if (!pattern.includes('*') && !pattern.includes('?') && !pattern.includes('[')) {
+        if (!normalizedPattern.includes('*') && !normalizedPattern.includes('?') && !normalizedPattern.includes('[')) {
             try {
-                // Check if file exists
+                // Check if file exists (use original pattern for file system access)
                 await fs.access(pattern)
                 expandedFiles.push(pattern)
             } catch {
@@ -221,62 +225,23 @@ async function expandGlobPatterns(patterns: string[]): Promise<string[]> {
             continue
         }
 
-        // Handle glob patterns with simple matching
-        const files = await findFilesMatchingPattern(pattern)
-        expandedFiles.push(...files)
+        // Use fast-glob for pattern matching with normalized pattern
+        const files = await fg(normalizedPattern, {
+            cwd: process.cwd(),
+            dot: true,
+            absolute: false,
+            onlyFiles: true,
+            // Only match test files
+            ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**']
+        })
+
+        // Filter to only test files
+        const testFiles = files.filter(file => /\.(test|spec)\.(ts|tsx|js|jsx|html)$/.test(file))
+        expandedFiles.push(...testFiles)
     }
 
     // Remove duplicates
     return [...new Set(expandedFiles)]
-}
-
-// Simple glob pattern matching function
-async function findFilesMatchingPattern(pattern: string): Promise<string[]> {
-    const fs = await import('node:fs/promises')
-    const path = await import('node:path')
-
-    // Convert glob pattern to regex
-    const regexPattern = pattern
-        .replace(/\./g, '\\.')      // Escape dots
-        .replace(/\*/g, '.*')       // Convert * to .*
-        .replace(/\?/g, '.')        // Convert ? to .
-        .replace(/\//g, '[/\\\\]')  // Convert / to [/\\]
-
-    const regex = new RegExp(regexPattern)
-
-    // Find all files recursively
-    const allFiles = await findAllFiles('.')
-
-    // Filter files matching the pattern
-    return allFiles.filter(file => regex.test(file) && /\.(test|spec)\.(ts|tsx|js|jsx|html)$/.test(file))
-}
-
-// Find all files recursively
-async function findAllFiles(dir: string): Promise<string[]> {
-    const fs = await import('node:fs/promises')
-    const path = await import('node:path')
-
-    const files: string[] = []
-
-    try {
-        const entries = await fs.readdir(dir, { withFileTypes: true })
-
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name)
-
-            if (entry.isDirectory()) {
-                // Recursively scan subdirectories
-                const subFiles = await findAllFiles(fullPath)
-                files.push(...subFiles)
-            } else if (entry.isFile()) {
-                files.push(fullPath)
-            }
-        }
-    } catch (error) {
-        console.warn(`Could not scan directory ${dir}:`, error)
-    }
-
-    return files
 }
 
 // Helper function to process HTML files with custom elements
