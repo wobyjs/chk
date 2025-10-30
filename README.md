@@ -6,6 +6,8 @@
 
 Whether you're building a simple library or a complex application, `@woby/chk` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `@woby/chk` has you covered.
 
+[Documentation](https://wobyjs.github.io/chk/)
+
 ## Features
 
 *   **Intuitive `expect` API:** A rich set of matchers for making assertions about your code.
