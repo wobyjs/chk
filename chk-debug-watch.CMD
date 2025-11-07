@@ -1,2 +1,32 @@
 @echo off
-deno --watch --inspect-brk --unstable-sloppy-imports --allow-read --allow-net --allow-env --allow-sys --allow-write --allow-ffi --allow-run %~dp0src\bin\chk.ts %*
+where tsx >nul 2>&1
+if %errorlevel% == 0 (
+    tsx --inspect-brk "%~dp0src\bin\chk.ts" --watch %*
+) else (
+    echo tsx is not installed globally. Installing...
+    call :install_tsx
+    tsx --inspect-brk "%~dp0src\bin\chk.ts" --watch %*
+)
+exit /b
+
+:install_tsx
+where pnpm >nul 2>&1
+if %errorlevel% == 0 (
+    pnpm add -g tsx
+    exit /b
+)
+
+where yarn >nul 2>&1
+if %errorlevel% == 0 (
+    yarn global add tsx
+    exit /b
+)
+
+where npm >nul 2>&1
+if %errorlevel% == 0 (
+    npm install -g tsx
+    exit /b
+)
+
+echo No package manager found. Please install tsx manually.
+exit /b

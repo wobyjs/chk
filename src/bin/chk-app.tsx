@@ -41,6 +41,7 @@ export default async function run() {
             program
                 .name('chk')
                 .description('CLI to run @woby/chk tests')
+                .version('1.1.1')
                 .argument('[files...]', 'test files to run (supports glob patterns like *.test.ts)')
                 .option('-w, --watch', 'watch files for changes')
                 .option('-v, --verbose', 'output verbose logging')
@@ -297,9 +298,20 @@ async function processHtmlFile(filePath: string): Promise<void> {
             const testName = `${pathModule.basename(filePath, '.html')}/${customElement.tagName.toLowerCase()}-${i}`
 
             try {
-                // Wait for the custom element to be defined
-                await customElements.whenDefined(customElement.tagName.toLowerCase())
+                // Wait for the custom element to be defined with a timeout
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error(`Timeout waiting for custom element: ${customElement.tagName.toLowerCase()}`)), 5000)
+                )
+                await Promise.race([
+                    customElements.whenDefined(customElement.tagName.toLowerCase()),
+                    timeoutPromise
+                ])
+            } catch (whenDefinedError) {
+                console.warn(`Failed to wait for custom element definition: ${customElement.tagName.toLowerCase()}`, whenDefinedError)
+                // Continue processing even if the custom element is not defined
+            }
 
+            try {
                 // Create a container for rendering using the global document
                 const container = document.createElement('div')
 
