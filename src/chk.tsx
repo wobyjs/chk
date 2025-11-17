@@ -159,24 +159,35 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
     else if (trimmedChildren instanceof HTMLSlotElement) {
         trimmedChildren.onslotchange = () => {
             const elements = trimmedChildren.assignedElements()
-            
-            // Check if any element has a 'name' attribute
-            const hasNameAttr = elements.some(e => e.hasAttribute('name'))
-            
-            if (hasNameAttr) {
-                // Use the name attribute if it exists
-                const nameAttr = elements.find(e => e.hasAttribute('name'))?.getAttribute('name')
-                if (nameAttr) {
-                    name(normalizeComponentName(nameAttr))
-                    return
-                }
+
+            // ORIGINAL: Check if any element has a 'name' attribute (COMMENTED OUT - OLD LOGIC)
+            // const hasNameAttr = elements.some(e => e.hasAttribute('name'))
+            // 
+            // if (hasNameAttr) {
+            //     // Use the name attribute if it exists
+            //     const nameAttr = elements.find(e => e.hasAttribute('name'))?.getAttribute('name')
+            //     if (nameAttr) {
+            //         name(normalizeComponentName(nameAttr))
+            //         return
+            //     }
+            // }
+
+            // NEW: Prefer 'name' attribute from parent <woby-chk> element if available
+            const parentChk = trimmedChildren.parentElement?.closest('woby-chk')
+            const parentNameAttr = parentChk?.getAttribute('name')
+            if (parentNameAttr && parentNameAttr.trim() !== '') {
+                // Use the parent woby-chk name attribute as the snapshot name
+                name(parentNameAttr)
+                return
             }
-            
+
             // Otherwise, use the default pattern (tag name + stable attributes)
             const n = elements.map(e => {
                 // Filter out dynamic attributes that shouldn't be part of the snapshot name
-                const stableAttrs = [...e.attributes].filter(a => 
-                    !['style', 'class', 'id', 'name'].includes(a.name) && !a.name.startsWith('on')
+                // UPDATED: Keep 'name' attribute out of snapshot naming to avoid conflicts
+                // UPDATED: Also filter out 'delete-icon' and 'avatar' as they contain component/function references
+                const stableAttrs = [...e.attributes].filter(a =>
+                    !['style', 'class', 'id', 'name', 'delete-icon', 'avatar', 'cls'].includes(a.name) && !a.name.startsWith('on')
                 )
                 const attrString = stableAttrs.map(a => `${a.name}=${a.value}`).join(',')
                 return e.tagName.toLowerCase() + (attrString ? `{${attrString}}` : '')
@@ -306,7 +317,7 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
     return <div class="grid grid-cols-2 gap-6 p-4">
         <div class="relative border rounded-md pt-6 pb-4 px-4 bg-white shadow-sm">
             <div class="absolute -top-3 left-4 right-4 flex justify-between items-center">
-                <span class={["bg-white px-2 text-sm font-semibold ", () => $$(result) ? "text-green-800" : "text-red-800"]}><b>{name}</b></span>
+                <span class={["bg-white px-2 text-sm font-semibold whitespace-nowrap text-ellipsis overflow-hidden", () => $$(result) ? "text-green-800" : "text-red-800"]}><b>{name}</b></span>
 
                 {/* <div class="flex space-x-1">
                         <button class="px-2 py-0.5 bg-green-600 text-white text-xs rounded hover:bg-green-700">Accept</button>
@@ -319,7 +330,7 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
         </div>
         <div class="relative border rounded-md pt-6 pb-4 px-4 bg-white shadow-sm">
             <div class="absolute -top-3 left-4 right-4 flex justify-between items-center">
-                <span class={["bg-white px-2 text-sm font-semibold ", () => $$(result) ? "text-green-800" : "text-red-800"]}><b>{name}</b> Snapshot</span>
+                <span class={["bg-white px-2 text-sm font-semibold whitespace-nowrap text-ellipsis overflow-hidden", () => $$(result) ? "text-green-800" : "text-red-800"]}><b>{name}</b> Snapshot</span>
                 {buttons}
             </div>
             <div ref={ref} />
