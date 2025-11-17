@@ -168,6 +168,21 @@ export class Test<T> {
             // let g = result ? console.groupCollapsed : console.group
             let code = stack.stack.split('\n')
 
+            // Extract and display full file path for top-level test modules
+            const stackLines = stack.stack.split('\n')
+            const fileLine = stackLines[4] ?? stackLines[3]
+            const filePathMatch = fileLine?.match(/at\s+(file:\/\/\/.*?):(\d+):(\d+)/)
+
+            // Only show filename for top-level test modules (those without a Test parent)
+            if (filePathMatch && !(this.parent instanceof Test)) {
+                const fullPath = filePathMatch[1]
+                const lineNumber = filePathMatch[2]
+                const columnNumber = filePathMatch[3]
+
+                // Display full path with line:column in blue and bold, making it clickable
+                console.log(`%c${fullPath}:${lineNumber}:${columnNumber}`, 'color: #5BA3F5; font-weight: bold')
+            }
+
             // Show location if result fails, regardless of noLocation setting
             const showLocation = !noLocation || !result
             const group = showLocation || !!modules.length

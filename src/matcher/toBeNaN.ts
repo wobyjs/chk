@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeNaN` matcher for the `verifies` testing framework.
+ * @file Implements the `toBeNaN` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a value is `NaN` (Not-a-Number).
  */
 

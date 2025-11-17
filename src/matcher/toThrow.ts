@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toThrow` matcher for the `verifies` testing framework.
+ * @file Implements the `toThrow` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a function throws an error, optionally matching the error message or a regular expression.
  */
 
@@ -15,6 +15,7 @@ declare module '../expect' {
          * @param expected Optional: A string or regular expression to match against the error message.
          */
         toThrow(expected?: string | RegExp): void
+
     }
 }
 

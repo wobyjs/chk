@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveBeenCalledNthCalledWith` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveBeenCalledNthCalledWith` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a mock function was called with specific arguments on its Nth call.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveResolvedTimes` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveResolvedTimes` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a mock function has successfully resolved (returned a value) a specific number of times.
  */
 

@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeTruthy` matcher for the `verifies` testing framework.
+ * @file Implements the `toBeTruthy` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a value is truthy (evaluates to `true` in a boolean context).
  */
 

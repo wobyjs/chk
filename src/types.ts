@@ -1,5 +1,5 @@
 /**
- * @file Defines the core types and interfaces used throughout the `verifies` testing framework.
+ * @file Defines the core types and interfaces used throughout the `@woby/chk` testing framework.
  * This includes types for test contexts, expectation functions, test options, and report structures.
  */
 

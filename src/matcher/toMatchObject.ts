@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toMatchObject` matcher for the `verifies` testing framework.
+ * @file Implements the `toMatchObject` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that an object contains a subset of properties and values from another object.
  */
 

@@ -1,6 +1,6 @@
 {
     "name": "@woby/chk",
-    "version": "0.1.9",
+    "version": "1.1.1",
     "description": "In browser testing framework",
     "publishConfig": {
         "access": "public"
@@ -29,6 +29,7 @@
         "commit": "pnpm git && pnpm bump && pnpm push",
         "release": "run-s -c commit npmjs",
         "preinstall": "npx only-allow pnpm",
+        "postinstall": "node ./scripts/install-tsx.js || echo 'Failed to install tsx globally, you may need to run: pnpm add -g tsx'",
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap  --verbose",
         "build:lib": "vite build",
         "build:cli": "vite build --config vite.config.bin.mts",
@@ -50,15 +51,18 @@
         "diff": "^8.0.2",
         "happy-dom": "^18.0.1",
         "tailwindcss": "^4.1.11",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.20.6",
         "typescript": "^5.8.3",
         "vite": "^6.3.5"
     },
     "peerDependencies": {
-        "woby": "workspace:../woby"
+        "woby": "^1.58.39"
     },
     "dependencies": {
         "ansis": "^4.1.0",
         "cli-highlight": "^2.1.11",
-        "commander": "^14.0.1"
+        "commander": "^14.0.1",
+        "fast-glob": "^3.3.3"
     }
 }

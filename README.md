@@ -1,10 +1,12 @@
 # @woby/chk: A Modern TypeScript Testing Toolkit
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wongchichong/verifies)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/wobyjs/chk.git)
 
 `@woby/chk` is a powerful and flexible testing toolkit designed to streamline unit and integration testing in TypeScript projects. It offers a comprehensive suite of utilities for writing robust and reliable tests with an intuitive, fluent API that will feel familiar to users of modern testing frameworks like Jest or Vitest.
 
-Whether you're building a simple library or a complex application, `@woby/chk` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `verifies` has you covered.
+Whether you're building a simple library or a complex application, `@woby/chk` provides the tools you need to ensure your code is working as expected. From simple value assertions to complex mocking and spying, `@woby/chk` has you covered.
+
+[Documentation](https://wobyjs.github.io/chk/)
 
 ## Features
 
@@ -22,7 +24,7 @@ Whether you're building a simple library or a complex application, `@woby/chk` p
 
 `@woby/chk` integrates directly with your browser's developer tools, allowing for interactive debugging of your tests. When a test fails or you set a breakpoint, you can inspect variables, step through your code, and utilize the full power of the browser's debugger. This is complemented by real-time code highlighting, making it easy to pinpoint the exact line of code being executed.
 
-![Debugging Code Highlight](./docs/debugging%20code%20highlight.png)
+![Debugging Code Highlight](./doc/debugging%20code%20highlight.png)
 
 ### In-Browser Test Case Navigation
 
@@ -30,15 +32,15 @@ Unlike many other test frameworks that primarily run in a command-line interface
 
 ### Visual Snapshot Testing with Accept/Reject Workflow
 
-`@woby/chk` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `verifies` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools. The generated snapshot files are stored in the `example/.snapshots/` directory within the project.
+`@woby/chk` extends snapshot testing to the browser, allowing you to visually compare and manage UI snapshots. When a snapshot test fails, `@woby/chk` displays a side-by-side comparison of the expected and actual UI. You can then visually inspect the differences and, directly within the browser, choose to "Accept" the new snapshot (saving it as the new baseline) or "Reject" it (indicating a bug that needs fixing). This interactive workflow for managing snapshots is a significant advantage over CLI-only snapshot tools. The generated snapshot files are stored in the `example/.snapshots/` directory within the project.
 
-![DOM Snapshot](./docs/dom%20snapshot.png)
+![DOM Snapshot](./doc/dom%20snapshot.png)
 
 
 
 ## Installation
 
-To get started with `verifies`, install it as a dev dependency in your project:
+To get started with `@woby/chk`, install it as a dev dependency in your project:
 
 ```bash
 npm install @woby/chk --save-dev
@@ -46,7 +48,7 @@ npm install @woby/chk --save-dev
 
 ## Configuration
 
-`@woby/chk` is designed to work with modern build tools like Vite. Here is an example of how to configure Vite to use `verifies` for your tests:
+`@woby/chk` is designed to work with modern build tools like Vite. Here is an example of how to configure Vite to use `@woby/chk` for your tests:
 
 ``typescript
 // vite.config.mts
@@ -147,13 +149,13 @@ To run the example tests, follow these steps:
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/wongchichong/verifies.git
+    git clone https://github.com/wobyjs/chk.git
     ```
 
 2.  Navigate to the `example` directory:
 
     ```bash
-    cd verifies/example
+    cd chk/example
     ```
 
 3.  Install dependencies:
@@ -187,8 +189,8 @@ test('should sum two numbers', () => {
 
 ## API Documentation
 
-*   [Expect API](./docs/expect.md)
-*   [Mock API](./docs/mock.md)
-*   [Test API](./docs/test.md)
-*   [Fn API](./docs/fn.md)
-*   [SpyOn API](./docs/spyOn.md)
+*   [Expect API](./doc/expect.md)
+*   [Mock API](./doc/mock.md)
+*   [Test API](./doc/test.md)
+*   [Fn API](./doc/fn.md)
+*   [SpyOn API](./doc/spyOn.md)

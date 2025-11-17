@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeOneOf` matcher for the `verifies` testing framework.
+ * @file Implements the `toBeOneOf` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a value is one of the elements in a given array.
  */
 

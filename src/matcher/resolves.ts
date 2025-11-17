@@ -1,5 +1,5 @@
 /**
- * @file Implements the `resolves` matcher for the `verifies` testing framework.
+ * @file Implements the `resolves` matcher for the `@woby/chk` testing framework.
  * This matcher is used to assert that a Promise subject resolves, and optionally, to assert the value it resolves with.
  */
 

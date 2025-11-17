@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toContain` matcher for the `verifies` testing framework.
+ * @file Implements the `toContain` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that an array or string contains a specific item or substring.
  */
 

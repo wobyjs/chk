@@ -1,5 +1,5 @@
 /**
- * @file Implements the `Check` class, which serves as the core test runner and reporter for the `verifies` testing framework.
+ * @file Implements the `Check` class, which serves as the core test runner and reporter for the `@woby/chk` testing framework.
  * It orchestrates the execution of test modules and generates reports based on their outcomes.
  */
 
@@ -63,7 +63,7 @@ export class Verifies {
 }
 
 /**
- * Extends the global `Window` interface to include a `verifies` property.
+ * Extends the global `Window` interface to include a `@woby/chk` property.
  * This allows the `Check` instance to be globally accessible in a browser environment.
  */
 declare global {
@@ -71,10 +71,10 @@ declare global {
         /**
          * The global instance of the `Check` test runner.
          */
-        verifies: Verifies
+        @woby/chk: Verifies
     }
 }
 
-// Initialize the global `verifies` instance if it doesn't already exist.
-if (!window.verifies)
-    window.verifies = new Verifies()
+// Initialize the global `@woby/chk` instance if it doesn't already exist.
+if (!window.@woby/chk)
+    window.@woby/chk = new Verifies()

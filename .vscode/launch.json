@@ -13,7 +13,7 @@
                 "--allow-read",
                 "--allow-net",
                 "--allow-env",
-                "src/bin/verifies.ts"
+                "src/bin/chk.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

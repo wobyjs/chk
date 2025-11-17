@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveNthReturnedWith` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveNthReturnedWith` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a mock function's Nth successful return value matches a given expected value.
  */
 

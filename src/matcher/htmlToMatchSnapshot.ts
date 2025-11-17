@@ -1,5 +1,5 @@
 /**
- * @file Implements the `htmlToMatchSnapshot` matcher for the `verifies` testing framework.
+ * @file Implements the `htmlToMatchSnapshot` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that an HTML string matches a stored snapshot.
  */
 

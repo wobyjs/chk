@@ -1,13 +1,13 @@
-# Debugging verifies CLI Tool
+# Debugging @woby/chk CLI Tool
 
-This document explains how to debug the verifies CLI tool using VS Code.
+This document explains how to debug the @woby/chk CLI tool using VS Code.
 
 ## Available Debug Configurations
 
-1. **Run verifies CLI with app.test.tsx** - Run the CLI with app.test.tsx without debugging
-2. **Run verifies CLI with sample.test.ts** - Run the CLI with sample.test.ts without debugging
-3. **Run verifies CLI with multiple test files** - Run the CLI with multiple test files without debugging
-4. **Debug verifies CLI (Manual Chrome DevTools)** - Start debugging session with Chrome DevTools
+1. **Run @woby/chk CLI with app.test.tsx** - Run the CLI with app.test.tsx without debugging
+2. **Run @woby/chk CLI with sample.test.ts** - Run the CLI with sample.test.ts without debugging
+3. **Run @woby/chk CLI with multiple test files** - Run the CLI with multiple test files without debugging
+4. **Debug @woby/chk CLI (Manual Chrome DevTools)** - Start debugging session with Chrome DevTools
 5. **Attach to Deno Debugger** - Attach to an already running Deno debugging session
 
 ## Recommended Approach: Chrome DevTools
@@ -17,7 +17,7 @@ Since VS Code has limited support for Deno debugging, the recommended approach i
 1. Open a terminal in the project root directory
 2. Run the debug command manually:
    ```bash
-   deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/verifies.ts ../../example/src/app.test.tsx
+   deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/chk.ts ../../example/src/app.test.tsx
    ```
 3. Open Chrome and navigate to `chrome://inspect`
 4. Click "inspect" under the Deno process
@@ -28,7 +28,7 @@ Since VS Code has limited support for Deno debugging, the recommended approach i
 If you want to try debugging directly in VS Code:
 
 1. Make sure you have the Deno extension installed in VS Code
-2. Select the "Debug verifies CLI (Manual Chrome DevTools)" configuration
+2. Select the "Debug @woby/chk CLI (Manual Chrome DevTools)" configuration
 3. Press F5 to start debugging
 4. When the debugger starts, VS Code will automatically open Chrome DevTools
 5. Set breakpoints and debug as needed
@@ -60,13 +60,13 @@ You can also debug manually from the terminal:
 
 ```bash
 # Run without debugging
-deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/verifies.ts ../../example/src/app.test.tsx
+deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env src/bin/chk.ts ../../example/src/app.test.tsx
 
 # Debug with Chrome DevTools
-deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/verifies.ts ../../example/src/app.test.tsx
+deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-brk src/bin/chk.ts ../../example/src/app.test.tsx
 
 # Debug with wait (waits for debugger to attach)
-deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-wait src/bin/verifies.ts ../../example/src/app.test.tsx
+deno run --unstable-sloppy-imports --allow-read --allow-net --allow-env --inspect-wait src/bin/chk.ts ../../example/src/app.test.tsx
 ```
 
 Then open `chrome://inspect` in Chrome to connect to the debugger.

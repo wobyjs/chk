@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toHaveLastResolvedWith` matcher for the `verifies` testing framework.
+ * @file Implements the `toHaveLastResolvedWith` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a mock function's last successful resolution (return value) matches a given expected value.
  */
 

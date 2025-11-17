@@ -1,5 +1,5 @@
 /**
- * @file Implements the `toBeCloseTo` matcher for the `verifies` testing framework.
+ * @file Implements the `toBeCloseTo` matcher for the `@woby/chk` testing framework.
  * This matcher asserts that a number is close to another number within a specified precision.
  */
 
