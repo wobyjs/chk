@@ -14,7 +14,7 @@ const config = defineConfig({
         outDir: './dist',
         emptyOutDir: false, // Don't empty the main dist directory
         rollupOptions: {
-            external: ['happy-dom'],
+            external: [],
             output: {
                 entryFileNames: 'bin/[name].js',
             },

@@ -4,6 +4,7 @@
  */
 
 import { render, } from 'woby'
+import * as React from 'woby'
 import { Checks } from './checks'
 import { normalizeComponentName } from './utils'
 import { Chk } from './chk'

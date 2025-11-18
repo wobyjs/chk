@@ -24,7 +24,7 @@ const config = defineConfig({
     plugins: [tailwindcss() as any],
     build: {
         rollupOptions: {
-            external: ['woby', 'woby/jsx-runtime', 'oby', 'woby/jsx-runtime', 'happy-dom'],
+            external: ['woby', 'woby/jsx-runtime', 'oby', 'woby/jsx-runtime'],
             output: {
                 globals: {
                     'woby': 'woby',

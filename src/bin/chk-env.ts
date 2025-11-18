@@ -1,88 +1,51 @@
 // Environment setup module for chk
-import { Window as HappyWindow } from "happy-dom"
+console.log("Setting up woby environment...")
 
-console.log("Setting up happy-dom environment...")
+// Use Node.js built-in queueMicrotask if available, otherwise provide a fallback
+const queueMicrotask = globalThis.queueMicrotask || ((callback) => Promise.resolve().then(callback))
 
-// Create a happy-dom window
-const window = new HappyWindow({
-    url: "http://localhost",
-    settings: {
-        disableJavaScriptFileLoading: true,
-        disableCSSFileLoading: true,
-        enableFileSystemHttpRequests: true
-    }
-})
+    // Mark as Deno environment
+    // @ts-ignore
+    ; (globalThis as any).isDeno = true
 
-
-    ; (window as any).isDeno = true
-
-// Set up timing functions and all necessary globals for woby
+// Set up minimal globals needed for woby
 // @ts-ignore
-globalThis.document = window.document
+globalThis.window = globalThis
 // @ts-ignore
-globalThis.window = window
+globalThis.location = { href: 'http://localhost', origin: 'http://localhost' }
 // @ts-ignore
-globalThis.HTMLElement = window.HTMLElement
-// @ts-ignore
-globalThis.customElements = window.customElements
-// @ts-ignore
-globalThis.MouseEvent = window.MouseEvent
-// @ts-ignore
-globalThis.Event = window.Event
-// @ts-ignore
-globalThis.KeyboardEvent = window.KeyboardEvent
-// @ts-ignore
-globalThis.FocusEvent = window.FocusEvent
-// @ts-ignore
-globalThis.MutationObserver = window.MutationObserver
-// @ts-ignore
-globalThis.HTMLFormElement = window.HTMLFormElement
-// @ts-ignore
-globalThis.HTMLInputElement = window.HTMLInputElement
-// @ts-ignore
-globalThis.HTMLButtonElement = window.HTMLButtonElement
-// @ts-ignore
-globalThis.HTMLDivElement = window.HTMLDivElement
-// @ts-ignore
-globalThis.location = window.location
-// @ts-ignore
-globalThis.history = window.history
+globalThis.history = { length: 0, state: null, scrollRestoration: 'auto' }
 // @ts-ignore
 Object.defineProperty(globalThis, 'navigator', {
-    value: window.navigator,
+    value: {
+        userAgent: 'woby-test-runner',
+        platform: 'node',
+        language: 'en-US'
+    },
     writable: true,
     configurable: true
 })
-// @ts-ignore
-globalThis.Node = window.Node
 
-// Set up timing functions (these are usually safe to assign)
+// Set up timing functions
 // @ts-ignore
-globalThis.setTimeout = window.setTimeout.bind(window)
+globalThis.setTimeout = setTimeout
 // @ts-ignore
-globalThis.clearTimeout = window.clearTimeout.bind(window)
+globalThis.clearTimeout = clearTimeout
 // @ts-ignore
-globalThis.setInterval = window.setInterval.bind(window)
+globalThis.setInterval = setInterval
 // @ts-ignore
-globalThis.clearInterval = window.clearInterval.bind(window)
+globalThis.clearInterval = clearInterval
 // @ts-ignore
-globalThis.requestAnimationFrame = window.requestAnimationFrame.bind(window)
+globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0)
 // @ts-ignore
-globalThis.cancelAnimationFrame = window.cancelAnimationFrame.bind(window)
+globalThis.cancelAnimationFrame = clearTimeout
 // @ts-ignore
-globalThis.queueMicrotask = window.queueMicrotask.bind(window)
+globalThis.queueMicrotask = queueMicrotask
 // @ts-ignore
-globalThis.dispatchEvent = window.dispatchEvent.bind(window)
-// @ts-ignore
-globalThis.fetch = window.fetch.bind(window)
-// @ts-ignore
-globalThis.MutationObserver = window.MutationObserver
-// @ts-ignore
-globalThis.ResizeObserver = window.ResizeObserver
+globalThis.dispatchEvent = () => true
 
-console.log("Happy-dom environment setup complete")
-console.log("Window available:", typeof window !== 'undefined')
-console.log("Document available:", typeof document !== 'undefined')
+console.log("Woby environment setup complete")
+console.log("GlobalThis available:", typeof globalThis !== 'undefined')
 
 // Export a function to dynamically import and run the main application
 export async function runChkApp() {
