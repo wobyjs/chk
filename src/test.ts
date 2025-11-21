@@ -173,9 +173,13 @@ export class Test<T> {
             const fileLine = stackLines[4] ?? stackLines[3]
             const filePathMatch = fileLine?.match(/at\s+(file:\/\/\/.*?):(\d+):(\d+)/)
 
-            // Only show filename for top-level test modules (those without a Test parent)
-            if (filePathMatch && !(this.parent instanceof Test)) {
-                const fullPath = filePathMatch[1]
+            // Extract file name for use in test titles
+            let fileName = ''
+            let fullPath = ''
+            if (filePathMatch) {
+                fullPath = filePathMatch[1]
+                fileName = fullPath.split('/').pop() || fullPath.split('\\').pop() || fullPath
+                // Show filename for all test modules, not just top-level ones
                 const lineNumber = filePathMatch[2]
                 const columnNumber = filePathMatch[3]
 
@@ -187,8 +191,11 @@ export class Test<T> {
             const showLocation = !noLocation || !result
             const group = showLocation || !!modules.length
 
+            // Add file name to the beginning of the test title for all tests
+            const displayTitle = fileName ? `${fileName} ${title}` : title
+
             // Use the new options format for loc function
-            return loc(check(result, null, null, [title, `[${modules.length}]`]), { collapse: !!result, group }, ({ log, loc }) => {
+            return loc(check(result, null, null, [displayTitle, `[${modules.length}]`]), { collapse: !!result, group }, ({ log, loc }) => {
                 // Hide this log if noLocation is true and test passed
                 if (showLocation) {
                     // log(`code5 %c${this.subject} ${code}`, 'color:gray')

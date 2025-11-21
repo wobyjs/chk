@@ -21,6 +21,9 @@ export const check: Messenger<string> =
     <T>(result: ResultType, subject: T, target: T, previousMessage = [] as string[]) => {
         const [h, ...tail] = previousMessage
         // Add extra spacing to make the output more readable
-        const args = [`%c${result ? '✓' : '✗'} %c${h}`, result ? 'color:#D5FF9E' : 'color:#FA7C7A', 'font-weight:normal'].concat(tail.length > 0 ? tail : [""])
+        // Use different icons for different environments (console vs DevTools)
+        const icon = result ? '✔' : '✘'
+        const color = result ? '#4CAF50' : '#F44336' // Green for success, red for failure
+        const args = [`%c${icon} %c${h}`, `color:${color}; font-weight:bold`, 'font-weight:normal'].concat(tail.length > 0 ? tail : [""])
         return args
     }

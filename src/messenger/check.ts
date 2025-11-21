@@ -19,4 +19,4 @@ import { Messenger } from '../messenger'
  * @returns An array containing a single formatted string message.
  */
 export const check: Messenger<string> =
-    <T>(result: ResultType, subject: T, target: T, previousMessage?: string[]) => [`${result ? '✓' : '✗'} ${(previousMessage ?? []).join(' ')}`]
+    <T>(result: ResultType, subject: T, target: T, previousMessage?: string[]) => [`${result ? '✔' : '✘'} ${(previousMessage ?? []).join(' ')}`]

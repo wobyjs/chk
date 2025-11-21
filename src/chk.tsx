@@ -8,7 +8,7 @@
 /// <reference types="vite/client"/>
 
 import { type JSX, render, mark, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement, ObservableMaybe, isObservable, defaults, useTimeout, Observable } from 'woby'
-import { serializeProps, serializeOutput, normalizeComponentName } from './utils'
+import { serializeProps, serializeOutput, normalizeComponentName, generateShortComponentId } from './utils'
 import { SnapshotTest } from './snapshotTest' // Import SnapshotTest
 
 if (!window.isDeno)
@@ -137,7 +137,9 @@ function getFullHTML(node: Node): string {
  */
 export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | undefined, children: $<JSX.Child>() as JSX.Child | undefined }), (props) => {
     const { name: pname, children, ...componentProps } = props
-    const name = isObservable(pname) ? pname : $($$(pname))
+    // Handle name prop correctly - if it's already an observable, use it directly
+    // If it's a value, create an observable with that value
+    const name = isObservable(pname) ? pname : $(pname !== undefined ? (pname as string) : '')
 
     const isDev = typeof import.meta.env !== 'undefined' && import.meta.env.DEV
     const rejected = $(false)
@@ -152,48 +154,60 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
     // const comp = extractNamedComponent((children as StackTaggedFunction)[SYMBOL_STACK]?.stack?.split('\n')[4])
     // const compName = comp ? comp + '/' + name : name
 
-    if (trimmedChildren.length === 1 && !$$(name)) {
-        if (isObservable(name))
-            name(normalizeComponentName(trimmedChildren[0].nodeName.toLowerCase()))
-    }
-    else if (trimmedChildren instanceof HTMLSlotElement) {
-        trimmedChildren.onslotchange = () => {
-            const elements = trimmedChildren.assignedElements()
+    // Only auto-generate name if no explicit name was provided
+    if (!$$(name) || $$(name) === '') {
+        if (trimmedChildren.length === 1) {
+            if (isObservable(name))
+                name(generateShortComponentId(normalizeComponentName(trimmedChildren[0].nodeName.toLowerCase())))
+        }
+        else if (trimmedChildren instanceof HTMLSlotElement) {
+            trimmedChildren.onslotchange = () => {
+                const elements = trimmedChildren.assignedElements()
 
-            // ORIGINAL: Check if any element has a 'name' attribute (COMMENTED OUT - OLD LOGIC)
-            // const hasNameAttr = elements.some(e => e.hasAttribute('name'))
-            // 
-            // if (hasNameAttr) {
-            //     // Use the name attribute if it exists
-            //     const nameAttr = elements.find(e => e.hasAttribute('name'))?.getAttribute('name')
-            //     if (nameAttr) {
-            //         name(normalizeComponentName(nameAttr))
-            //         return
-            //     }
-            // }
+                // ORIGINAL: Check if any element has a 'name' attribute (COMMENTED OUT - OLD LOGIC)
+                // const hasNameAttr = elements.some(e => e.hasAttribute('name'))
+                // 
+                // if (hasNameAttr) {
+                //     // Use the name attribute if it exists
+                //     const nameAttr = elements.find(e => e.hasAttribute('name'))?.getAttribute('name')
+                //     if (nameAttr) {
+                //         name(normalizeComponentName(nameAttr))
+                //         return
+                //     }
+                // }
 
-            // NEW: Prefer 'name' attribute from parent <woby-chk> element if available
-            const parentChk = trimmedChildren.parentElement?.closest('woby-chk')
-            const parentNameAttr = parentChk?.getAttribute('name')
-            if (parentNameAttr && parentNameAttr.trim() !== '') {
-                // Use the parent woby-chk name attribute as the snapshot name
-                name(parentNameAttr)
-                return
+                // NEW: Prefer 'name' attribute from parent <woby-chk> element if available
+                const parentChk = trimmedChildren.parentElement?.closest('woby-chk')
+                const parentNameAttr = parentChk?.getAttribute('name')
+                if (parentNameAttr && parentNameAttr.trim() !== '') {
+                    // Use the parent woby-chk name attribute as the snapshot name
+                    name(generateShortComponentId(parentNameAttr))
+                    return
+                }
+
+                // Otherwise, use the default pattern (tag name + stable attributes)
+                const n = elements.map(e => {
+                    // Filter out dynamic attributes that shouldn't be part of the snapshot name
+                    // UPDATED: Keep 'name' attribute out of snapshot naming to avoid conflicts
+                    // UPDATED: Also filter out 'delete-icon' and 'avatar' as they contain component/function references
+                    const stableAttrs = [...e.attributes].filter(a =>
+                        !['style', 'class', 'id', 'name', 'delete-icon', 'avatar', 'cls'].includes(a.name) && !a.name.startsWith('on')
+                    )
+                    // Limit the number of attributes and their length to create shorter, more manageable names
+                    const maxAttrs = 3 // Limit to first 3 attributes
+                    const maxAttrLength = 50 // Limit each attribute value to 50 characters
+                    const limitedAttrs = stableAttrs.slice(0, maxAttrs).map(a => {
+                        const value = a.value.length > maxAttrLength
+                            ? a.value.substring(0, maxAttrLength) + '...'
+                            : a.value
+                        return `${a.name}=${value}`
+                    })
+                    const attrString = limitedAttrs.join(',')
+                    return e.tagName.toLowerCase() + (attrString ? `{${attrString}}` : '')
+                }).join(' ')
+                // console.log('getFullHTML', getFullHTML(trimmedChildren))
+                name(generateShortComponentId(normalizeComponentName(n)))
             }
-
-            // Otherwise, use the default pattern (tag name + stable attributes)
-            const n = elements.map(e => {
-                // Filter out dynamic attributes that shouldn't be part of the snapshot name
-                // UPDATED: Keep 'name' attribute out of snapshot naming to avoid conflicts
-                // UPDATED: Also filter out 'delete-icon' and 'avatar' as they contain component/function references
-                const stableAttrs = [...e.attributes].filter(a =>
-                    !['style', 'class', 'id', 'name', 'delete-icon', 'avatar', 'cls'].includes(a.name) && !a.name.startsWith('on')
-                )
-                const attrString = stableAttrs.map(a => `${a.name}=${a.value}`).join(',')
-                return e.tagName.toLowerCase() + (attrString ? `{${attrString}}` : '')
-            }).join(' ')
-            // console.log('getFullHTML', getFullHTML(trimmedChildren))
-            name(normalizeComponentName(n))
         }
     }
 

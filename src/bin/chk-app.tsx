@@ -64,7 +64,7 @@ export default async function run() {
                         // Expand glob patterns if any are provided
                         files = await expandGlobPatterns(files)
                         if (files.length === 0) {
-                            console.log("No test files matched the provided patterns.")
+                            console.log("%cNo test files matched the provided patterns.", 'color: #F44336; font-weight: bold')
                             return
                         }
                         console.log(`Found ${files.length} test file(s) matching patterns:`, files)
@@ -103,7 +103,7 @@ export default async function run() {
                                         )
 
                                     } catch (wrapError) {
-                                        console.error(`Failed to wrap component ${name}:`, wrapError)
+                                        console.error(`%cFailed to wrap component ${name}:`, 'color: #F44336; font-weight: bold', wrapError)
                                     }
                                 }
                             } else if (file.endsWith('.html')) {
@@ -115,7 +115,7 @@ export default async function run() {
                                 // console.log("loaded...", file, app)
                             }
                         } catch (error) {
-                            console.error(`Failed to import ${file}:`, error)
+                            console.error(`%cFailed to import ${file}:`, 'color: #F44336; font-weight: bold', error)
                         }
                     }
 
@@ -131,10 +131,10 @@ export default async function run() {
 
             await program.parseAsync(args, { from: 'user' })
         } catch (error: any) {
-            console.error("❌ Failed to import test file(s):", error)
+            console.error("%c❌ Failed to import test file(s):", 'color: #F44336; font-weight: bold', error)
         }
     } catch (error) {
-        console.error("💥 Error in run function:", error)
+        console.error("%c💥 Error in run function:", 'color: #F44336; font-weight: bold', error)
     }
 }
 
@@ -195,7 +195,7 @@ async function scanDirectory(dir: string, testFiles: string[]): Promise<void> {
             }
         }
     } catch (error) {
-        console.warn(`Could not scan directory ${dir}:`, error)
+        console.warn(`%cCould not scan directory ${dir}:`, 'color: #F44336; font-weight: bold', error)
     }
 }
 
@@ -217,7 +217,7 @@ async function expandGlobPatterns(patterns: string[]): Promise<string[]> {
                 await fs.access(pattern)
                 expandedFiles.push(pattern)
             } catch {
-                console.warn(`%cFile not found: %c${pattern}`, 'color: #FA7C7A', '')
+                console.warn(`%cFile not found: ${pattern}`, 'color: #F44336; font-weight: bold')
             }
             continue
         }
@@ -261,7 +261,7 @@ async function processHtmlFile(filePath: string): Promise<void> {
                 console.log(`No corresponding TSX file found for ${filePath}`)
             }
         } catch (importError: any) {
-            console.warn(`Could not import corresponding TSX file ${tsxFilePath}:`, importError.message)
+            console.warn(`%cCould not import corresponding TSX file ${tsxFilePath}:`, 'color: #F44336; font-weight: bold', importError.message)
         }
 
         // Read the HTML file
@@ -349,10 +349,10 @@ async function processHtmlFile(filePath: string): Promise<void> {
 
                 console.log(`[Chk Dev Mode] Registered/Updated snapshot test for '${testName}'`)
             } catch (renderError) {
-                console.error(`Failed to process custom element ${customElement.tagName}:`, renderError)
+                console.error(`%cFailed to process custom element ${customElement.tagName}:`, 'color: #F44336; font-weight: bold', renderError)
             }
         }
     } catch (error) {
-        console.error(`Failed to process HTML file ${filePath}:`, error)
+        console.error(`%cFailed to process HTML file ${filePath}:`, 'color: #F44336; font-weight: bold', error)
     }
 }

@@ -270,3 +270,29 @@ export function normalizeComponentName(name: string): string {
 
     return normalizedName
 }
+
+/**
+ * Generates a short, unique identifier for a component based on its name and attributes
+ * This helps create more manageable snapshot file names
+ * @param name The component name
+ * @param maxLength The maximum length of the identifier (default: 100)
+ * @returns A shortened, unique identifier
+ */
+export function generateShortComponentId(name: string, maxLength: number = 100): string {
+    if (!name) return name
+
+    // Create a hash-based identifier for uniqueness
+    let hash = 0
+    for (let i = 0; i < name.length; i++) {
+        const char = name.charCodeAt(i)
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash // Convert to 32-bit integer
+    }
+
+    // Combine a shortened name with the hash
+    const shortenedName = name.length > 50 ? name.substring(0, 47) + '...' : name
+    const identifier = `${shortenedName}-${Math.abs(hash)}`
+
+    // Ensure it doesn't exceed max length
+    return identifier.length > maxLength ? identifier.substring(0, maxLength) : identifier
+}

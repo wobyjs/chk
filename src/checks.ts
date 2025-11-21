@@ -7,6 +7,7 @@ import { type Test } from "./test"
 import { type Expect } from "./expect"
 import { SnapshotTest } from "./snapshotTest"
 import { resetAcceptAllMode } from "./utils"
+import { redBright, greenBright } from 'ansis'
 
 /**
  * The `Check` class manages and executes a collection of test modules.
@@ -135,27 +136,33 @@ export class Checks {
 
         const totalDuration = (testEndTime - testStartTime) / 1000
 
-        // Colorful output for test results
+        // Colorful output for test results with enhanced icons
         console.log('\n')
+        const totalTests = passCount + failCount
+        const testResultsIcon = failCount === 0 ? '🎉' : '⚠️'
         console.log(
-            `%c📊 Test Results: %c${passCount} %cpassed%c, %c${failCount} %cfailed`,
+            `%c${testResultsIcon} Test Results: %c${passCount} %cpassed%c, %c${failCount} %cfailed%c, %c${totalTests} %ctotal`,
             'font-weight:bold',
-            'color:#D5FF9E;font-weight:bold',
-            'color:#D5FF9E',
+            'color:#4CAF50;font-weight:bold',
+            'color:#4CAF50',
             'color:default',
-            'color:#FA7C7A;font-weight:bold',
-            'color:#FA7C7A'
+            'color:#F44336;font-weight:bold',
+            'color:#F44336',
+            'color:default',
+            'color:#2196F3;font-weight:bold',
+            'color:#2196F3'
         )
 
         // Show file-level summary
+        const fileResultsIcon = filesFailed === 0 ? '✅' : '❌'
         console.log(
-            `%c Test Files %c${filesPassed} %cpassed%c, %c${filesFailed} %cfailed`,
+            `%c${fileResultsIcon} Test Files %c${filesPassed} %cpassed%c, %c${filesFailed} %cfailed`,
             'font-weight:bold',
-            'color:#D5FF9E;font-weight:bold',
-            'color:#D5FF9E',
+            'color:#4CAF50;font-weight:bold',
+            'color:#4CAF50',
             'color:default',
-            'color:#FA7C7A;font-weight:bold',
-            'color:#FA7C7A'
+            'color:#F44336;font-weight:bold',
+            'color:#F44336'
         )
 
         // Show timing information
@@ -165,11 +172,12 @@ export class Checks {
 
         // Show a summary message with color based on results
         if (failCount === 0) {
-            console.log("%c🎉 All tests completed successfully!", 'color:#D5FF9E;font-weight:bold')
+            console.log(
+                greenBright.bold(" All tests completed successfully!")
+            )
         } else {
             console.log(
-                `%c⚠️ Tests completed with ${failCount} failure${failCount > 1 ? 's' : ''}`,
-                'color:orange;font-weight:bold'
+                redBright.bold(`✘ Tests completed with ${failCount} failure${failCount > 1 ? 's' : ''}`)
             )
         }
     }

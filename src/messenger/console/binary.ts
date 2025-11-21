@@ -20,7 +20,7 @@ import { plain } from 'cli-highlight'
  */
 export const binary = (operator: string): Messenger<string> =>
     <T>(result: ResultType, subject: T, target: T, previousMessage?: string[]) => {
-        const operatorColor = result ? 'color:#D5FF9E; font-weight:bold;' : 'color:#FA7C7A; font-weight:bold;'
+        const operatorColor = result ? 'color:#4CAF50; font-weight:bold;' : 'color:#F44336; font-weight:bold;'
         const s = typeof subject === 'function' ? 'function' : subject
         const sp = operator[operator.length - 1] === '\n' ? '' : ' '
         const nl = operator[operator.length - 1] === '\n' ? '\n' : ''

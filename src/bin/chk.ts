@@ -7,6 +7,6 @@ setTimeout(async () => {
     const { runChkApp } = await import('./chk-env')
     await runChkApp()
   } catch (error) {
-    console.error("Error running chk app:", error)
+    console.error("%cError running chk app:", 'color: #F44336; font-weight: bold', error)
   }
 }, 100)

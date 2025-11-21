@@ -44,9 +44,12 @@ async function getSnapshotFilePath(id: string): Promise<string> {
 
     try {
         const path = await import('node:path')
-        // Normalize the ID to create a valid file path
-        const normalizedId = id.replace(/[^a-zA-Z0-9/_\-\.]/g, '_')
-        return path.resolve(snapshotBaseDir, '.snapshots', `${normalizedId}.snapshot.json`)
+        // Sanitize the ID to create a valid file path
+        const sanitizedId = id
+            .replace(/[^a-zA-Z0-9/_\-\.]/g, '_')
+            .replace(/_{2,}/g, '_') // Replace multiple underscores with single underscore
+            .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+        return path.resolve(snapshotBaseDir, '.snapshots', `${sanitizedId}.snapshot.json`)
     } catch (e) {
         return ''
     }
