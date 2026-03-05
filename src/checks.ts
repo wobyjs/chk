@@ -7,7 +7,7 @@ import { type Test } from "./test"
 import { type Expect } from "./expect"
 import { SnapshotTest } from "./snapshotTest"
 import { resetAcceptAllMode } from "./utils"
-import { redBright, greenBright } from 'ansis'
+import { redBright, greenBright } from 'chalkee'
 
 /**
  * The `Check` class manages and executes a collection of test modules.

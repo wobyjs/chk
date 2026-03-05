@@ -29,7 +29,7 @@
         "commit": "pnpm git && pnpm bump && pnpm push",
         "release": "run-s -c commit npmjs",
         "preinstall": "npx only-allow pnpm",
-        "postinstall": "node ./scripts/install-tsx.js || echo 'Failed to install tsx globally, you may need to run: pnpm add -g tsx'",
+        "postinstall1": "node ./scripts/install-tsx.js || echo 'Failed to install tsx globally, you may need to run: pnpm add -g tsx'",
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap  --verbose",
         "build:lib": "vite build",
         "build:cli": "vite build --config vite.config.bin.mts",
@@ -45,10 +45,12 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@tailwindcss/postcss": "^4.1.18",
         "@tailwindcss/vite": "^4.1.11",
         "@types/node": "^22.13.1",
         "@types/react": "^19.1.13",
         "diff": "^8.0.2",
+        "postcss": "^8.4.49",
         "tailwindcss": "^4.1.11",
         "ts-node": "^10.9.2",
         "tsx": "^4.20.6",
@@ -60,6 +62,7 @@
     },
     "dependencies": {
         "ansis": "^4.1.0",
+        "chalkee": "^1.0.0",
         "cli-highlight": "^2.1.11",
         "commander": "^14.0.1",
         "fast-glob": "^3.3.3"
