@@ -1,14 +1,12 @@
 // Environment setup module for chk
-console.log("Setting up woby environment...")
+// Uses woby's built-in SSR module instead of happy-dom or other 3rd-party DOM implementations
+console.log("Setting up woby SSR environment...")
 
-// Use Node.js built-in queueMicrotask if available, otherwise provide a fallback
-const queueMicrotask = globalThis.queueMicrotask || ((callback) => Promise.resolve().then(callback))
+// Mark as SSR/Deno-like environment (not a browser)
+// @ts-ignore
+;(globalThis as any).isDeno = true
 
-    // Mark as Deno environment
-    // @ts-ignore
-    ; (globalThis as any).isDeno = true
-
-// Set up minimal globals needed for woby
+// Set up minimal non-DOM globals needed for woby's SSR
 // @ts-ignore
 globalThis.window = globalThis
 // @ts-ignore
@@ -40,17 +38,15 @@ globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0)
 // @ts-ignore
 globalThis.cancelAnimationFrame = clearTimeout
 // @ts-ignore
-globalThis.queueMicrotask = queueMicrotask
+globalThis.queueMicrotask = globalThis.queueMicrotask || ((callback: () => void) => Promise.resolve().then(callback))
 // @ts-ignore
 globalThis.dispatchEvent = () => true
 
-console.log("Woby environment setup complete")
-console.log("GlobalThis available:", typeof globalThis !== 'undefined')
+console.log("Woby SSR environment setup complete")
 
 // Export a function to dynamically import and run the main application
 export async function runChkApp() {
     // Set the snapshot base directory to the current working directory
-    // This allows snapshots to be saved in the same directory where tests are run
     const { setSnapshotBaseDir } = await import('../utils/snapshotUtils')
     setSnapshotBaseDir(process.cwd())
 

@@ -7,12 +7,12 @@
 // Add vite/client types for import.meta.env
 /// <reference types="vite/client"/>
 
-import { type JSX, render, mark, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement, ObservableMaybe, isObservable, defaults, useTimeout, Observable } from 'woby'
+import { type JSX, render, renderToString, mark, useEffect, $, $$, useMemo, isPrimitive, DEBUGGER, customElement, ObservableMaybe, isObservable, defaults, useTimeout, Observable, useEnvironment } from 'woby'
 import { serializeProps, serializeOutput, normalizeComponentName, generateShortComponentId } from './utils'
 import { SnapshotTest } from './snapshotTest' // Import SnapshotTest
 
-if (!window.isDeno)
-    import('./index.css')
+// CSS is loaded automatically by Vite in browser mode
+// No need to explicitly import in SSR/CLI mode
 
 DEBUGGER.test = true
 
@@ -217,52 +217,54 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
     // const renderedShadowRoot = $<string>('') // Create a reactive observable for renderedShadowRoot
 
     try {
-        // Render the children to a detached DOM element to capture its output
-        const container = document.createElement('div')
+        const isSSR = typeof window === 'undefined' || (window as any).isDeno === true
 
-        if (typeof trimmedChildren !== 'function') {
-            // Create a MutationObserver to detect child node additions
-            const observer = new MutationObserver((mutationsList) => {
-                for (const mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach((node) => {
-                            // Update renderedOutput when nodes are added
-                            if (node instanceof Element) {
-                                useTimeout(() => {
-                                    renderedOutput(serializeOutput(getFullHTML(node)))
-                                }, 100)
-                            }
-                            // You can add specific logic here to handle added nodes
-                        })
-                    }
-                }
-            })
-
-            // Configure the observer to watch for child node additions
-            const observerConfig = {
-                childList: true,
-                subtree: true
+        if (isSSR) {
+            // SSR path: use woby's renderToString - no DOM required
+            try {
+                const html = renderToString(trimmedChildren as any)
+                renderedOutput(serializeOutput(html))
+            } catch (e: any) {
+                console.error(`[Chk] SSR renderToString error for '${$$( name)}':`, e)
+                renderedOutput(`ERROR: ${e.message}`)
             }
+        } else {
+            // Browser path: render to detached DOM element
+            const container = document.createElement('div')
 
-            // Start observing the container for child node additions
-            observer.observe(container, observerConfig)
-            render(trimmedChildren, container)
-        }
-        else {
-            render(trimmedChildren, container)
-            useTimeout(() => {
-                renderedOutput(serializeOutput(getFullHTML(container)))
-            }, 100)
+            if (typeof trimmedChildren !== 'function') {
+                // Create a MutationObserver to detect child node additions
+                const observer = new MutationObserver((mutationsList) => {
+                    for (const mutation of mutationsList) {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach((node) => {
+                                // Update renderedOutput when nodes are added
+                                if (node instanceof Element) {
+                                    useTimeout(() => {
+                                        renderedOutput(serializeOutput(getFullHTML(node)))
+                                    }, 100)
+                                }
+                            })
+                        }
+                    }
+                })
 
-            // Check if container has child nodes with shadow roots
-            // const childElements = container.querySelectorAll('*')
-            // for (let i = 0; i < childElements.length; i++) {
-            //     const element = childElements[i]
-            //     if (element.shadowRoot) {
-            //         renderedShadowRoot(serializeOutput(getFullHTML(element.shadowRoot)))
-            //         break // Capture the first shadow root found
-            //     }
-            // }
+                // Configure the observer to watch for child node additions
+                const observerConfig = {
+                    childList: true,
+                    subtree: true
+                }
+
+                // Start observing the container for child node additions
+                observer.observe(container, observerConfig)
+                render(trimmedChildren, container)
+            }
+            else {
+                render(trimmedChildren, container)
+                useTimeout(() => {
+                    renderedOutput(serializeOutput(getFullHTML(container)))
+                }, 100)
+            }
         }
     } catch (e: any) {
         console.error(`[Chk] Error rendering component '${name}' for snapshot:`, e)
@@ -357,8 +359,11 @@ export const Chk = defaults(() => ({ name: $('') as ObservableMaybe<string> | un
 })
 
 // Fix the customElement registration by making the component compatible
-if (!customElements.get('woby-chk'))
-    customElement('woby-chk', Chk)
+// Only register in browser environments - not in SSR/Node context
+if (typeof customElements !== 'undefined') {
+    if (!customElements.get('woby-chk'))
+        customElement('woby-chk', Chk)
 
-if (!customElements.get('woby-test'))
-    customElement('woby-test', Chk)
+    if (!customElements.get('woby-test'))
+        customElement('woby-test', Chk)
+}

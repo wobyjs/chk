@@ -4,10 +4,10 @@ import { Command } from 'commander'
 import path from "node:path"
 import fg from 'fast-glob'
 import { type Checks as ChecksType } from '../checks'
-import { Chk } from '../chk'
-// Removed happy-dom import
+import { renderToString } from 'woby'
 
-// Removed happy-dom module declaration
+
+
 
 // Main application function
 export default async function run() {
@@ -79,31 +79,33 @@ export default async function run() {
 
                             // Check if it's a component test file based on extension
                             if (file.endsWith('.tsx') || file.endsWith('.jsx')) {
-                                // For component files, import and wrap components with Chk
+                                // For component files, use woby's renderToString (SSR) to capture output
                                 const module = await import(fileUrl.href)
-                                // console.log(`Loaded component module: ${file}`)
 
-                                // Process each exported component
+                                // Process each exported component using renderToString
                                 for (const [name, Component] of Object.entries(module)) {
                                     // Skip non-component exports
                                     if (typeof Component !== 'function') continue
 
-                                    // console.log(`Processing component: ${name}`, Component)
-
                                     try {
-                                        const { render } = await import('woby')
-                                        const container = document.createElement('div')
+                                        // Use woby's SSR renderToString - no DOM needed
+                                        // Call component as function with empty props instead of using JSX
+                                        const element = Component({})
+                                        if (!element) {
+                                            console.warn(`[chk] Component '${name}' returned null/undefined, skipping`)
+                                            continue
+                                        }
+                                        const html = renderToString(element)
+                                        console.log(`[chk] renderToString('${name}'): ${html.length} chars`)
 
-                                        // Render with the exact props from your request
-                                        render(
-                                            <Chk name={name}>
-                                                <Component />
-                                            </Chk>,
-                                            container
-                                        )
+                                        // Register as a snapshot test using the rendered HTML
+                                        const { SnapshotTest } = await import('../snapshotTest')
+                                        const { Stack } = await import('woby')
+                                        const sp = new SnapshotTest(name, {}, html, new Stack(''))
+                                        window.checks.modules.push(sp)
 
                                     } catch (wrapError) {
-                                        console.error(`%cFailed to wrap component ${name}:`, 'color: #F44336; font-weight: bold', wrapError)
+                                        console.error(`%cFailed to render component ${name}:`, 'color: #F44336; font-weight: bold', wrapError)
                                     }
                                 }
                             } else if (file.endsWith('.html')) {
@@ -267,7 +269,7 @@ async function processHtmlFile(filePath: string): Promise<void> {
         // Read the HTML file
         const htmlContent = await fs.readFile(filePath, 'utf-8')
 
-        // Parse HTML content directly without happy-dom
+        // Parse HTML content directly without DOM simulation
         // Find all woby-chk elements using regex parsing
         const chkElements: { firstElementChild: { tagName: string, attributes: { name: string, value: string }[] } }[] = []
 

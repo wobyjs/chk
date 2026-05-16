@@ -3,7 +3,7 @@
  * This is the entry point for running tests in the browser environment
  */
 
-import { render, } from 'woby'
+import { render } from 'woby'
 import * as React from 'woby'
 import { Checks } from './checks'
 import { normalizeComponentName } from './utils'
@@ -11,7 +11,7 @@ import { Chk } from './chk'
 // import { Checks, Chk, normalizeComponentName} from './index'
 
 // Initialize the global chk instance if it's not already
-if (!window.checks) {
+if (typeof window !== 'undefined' && !window.checks) {
     window.checks = new Checks()
 }
 
@@ -80,7 +80,8 @@ export async function renderTestComponents(testModules: Record<string, Record<st
                 ...componentElements)
         }
 
-        // Render all components in a single render call
+        // Render all components in a single render call (BROWSER MODE ONLY)
+        // testRunner.tsx is only used in browser dev mode, not in CLI
         const container = document.getElementById('test-container')
         if (container) {
             render(allComponentElements, container)

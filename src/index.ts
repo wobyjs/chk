@@ -3,6 +3,45 @@
  * It re-exports all public modules, making them easily accessible from a single import.
  */
 
+// Auto-setup SSR environment in Node.js (not needed in browser/Vite)
+if (typeof window === 'undefined' && typeof globalThis !== 'undefined') {
+    // We're in Node.js - setup minimal environment
+    ; (globalThis as any).window = globalThis
+        ; (globalThis as any).isDeno = true
+
+    if (!globalThis.location) {
+        Object.defineProperty(globalThis, 'location', {
+            value: { href: 'http://localhost', origin: 'http://localhost' },
+            writable: true,
+            configurable: true
+        })
+    }
+
+    if (!globalThis.navigator) {
+        Object.defineProperty(globalThis, 'navigator', {
+            value: { userAgent: 'node-chk', platform: 'node', language: 'en-US' },
+            writable: true,
+            configurable: true
+        })
+    }
+
+    if (!globalThis.document) {
+        Object.defineProperty(globalThis, 'document', {
+            value: {
+                title: '',
+                createElement: (): any => ({ innerHTML: '', textContent: '', appendChild: () => {} }),
+                getElementById: (): any => null,
+                querySelector: (): any => null,
+                querySelectorAll: (): any[] => [],
+                body: { appendChild: (): any => {} },
+                head: { appendChild: (): any => {} }
+            },
+            writable: true,
+            configurable: true
+        })
+    }
+}
+
 export * from './checks'
 export * from './expect'
 // Remove the circular import

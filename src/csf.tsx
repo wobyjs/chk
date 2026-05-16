@@ -46,5 +46,5 @@ export const Csf = defaults(() => ({
 })
 
 
-if (!customElements.get('woby-csf'))
+if (typeof customElements !== 'undefined' && !customElements.get('woby-csf'))
     customElement('woby-csf', Csf)

@@ -324,8 +324,8 @@ export class Test<T> {
  * @returns The newly created `Test` instance.
  */
 export const test: TestFactory = <T>(titleOrSubject: T | string, opt?: TestOptions<T> | TesterType<T>, func?: TesterType<T | string>) => {
-    // Ensure window.checks is initialized
-    if (!window.checks) {
+    // Ensure window.checks is initialized (only in browser environment)
+    if (typeof window !== 'undefined' && !window.checks) {
         // In a browser environment, we need to make sure checks.ts is imported
         // This is a simple workaround - in practice, checks.ts should be imported before any tests are created
         console.warn('window.checks is not initialized. This may cause issues with test execution.')
