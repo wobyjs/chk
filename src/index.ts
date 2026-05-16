@@ -26,9 +26,11 @@ if (typeof window === 'undefined' && typeof globalThis !== 'undefined') {
     }
 
     if (!globalThis.document) {
+        let documentTitle = ''
         Object.defineProperty(globalThis, 'document', {
             value: {
-                title: '',
+                get title() { return documentTitle },
+                set title(value) { documentTitle = value },
                 createElement: (): any => ({ innerHTML: '', textContent: '', appendChild: () => {} }),
                 getElementById: (): any => null,
                 querySelector: (): any => null,
